@@ -12,8 +12,9 @@ Created on Thu Nov 14 19:29:42 2024
 quarter = int(input('Please entr number of quarters:'))
 tech_count = 0
 tech_list = []
-#import Hatchery from Hatchery.py
-#hatchery = Hatchery(cash=10000,tech_count=0)
+from Fish_type import Fish
+from Hatchery import Hatchery
+hatchery = Hatchery(cash=10000,tech_count=0)
 
 for quarter_count in range(1, quarter + 1):
     print('{:=^50s}'.format('STIMULATING quarter'+str(quarter_count)))
@@ -63,5 +64,26 @@ for quarter_count in range(1, quarter + 1):
         except ValueError:
              print('Please enter an integer number.')
              
-      
-            
+    #Fish Demand
+    while True:
+        try:
+            cf = Fish('Clef Fins', 0.1, 12, 2, 2, 25, 250)
+            ts = Fish('Timpani Snapper', 0.05, 9, 2, 1, 10, 350)
+            ab = Fish('Andalusian Brim', 0.09, 6, 2, 0.5, 15, 250)
+            pc = Fish('Plagal Cod', 0.1, 10, 2, 2, 20, 400)
+            ff = Fish('Fugue Flounder', 0.2, 12, 2, 2.5, 30, 550)
+            mb = Fish('Modal Bass', 0.3, 12, 6, 3, 50, 500)
+            fish_list = [cf, ts, ab, pc, ff, mb]
+     
+    
+            fc = int(input("Please enter how much 'Clef Fins' you'd like to sell in the quarter"))
+            ft = int(input("Please enter how much 'Timpani Snapper' you'd like to sell in the quarter"))
+            fa = int(input("Please enter how much 'Andalusian Brim' you'd like to sell in the quarter"))
+            fp = int(input("Please enter how much 'Plagal Cod' you'd like to sell in the quarter"))
+            ff = int(input("Please enter how much 'Fugue Flounder' you'd like to sell in the quarter"))
+            fm = int(input("Please enter how much 'Modal Bass' you'd like to sell in the quarter"))  
+   
+            print(fish_list)
+    
+            for fish in fish_list:
+                print('Fish', fish.name, ', demand', fish.limit, ', sell', fish.sell, ':',  fish.limit_)

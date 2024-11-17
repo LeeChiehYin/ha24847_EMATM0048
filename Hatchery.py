@@ -4,7 +4,7 @@ Created on Thu Nov 14 20:20:26 2024
 
 @author: Chieh-Yin
 """
-#Hatchery class (supplies, cash ,technicians)
+Hatchery class (supplies, cash ,technicians)
 class Hatchery:
     def __init__(self, supply, cash, tech_count):
         self.supply = {'fertilizer' = {'origin':30, 'main':20, 'aux':10, 0.4, 0.1)

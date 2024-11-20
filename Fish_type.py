@@ -7,11 +7,11 @@ Created on Thu Nov 14 23:36:25 2024
 
 #Fish type class
 class Fish :
-    def __init__(self, name, fertilizer, feed, salt, maintenance, limit, price):
+    def __init__(self, name, fertilizer_usage, feed_usage, salt_usage, maintenance, limit, price):
         self.name = name
-        self.fertilizer = fertilizer
-        self.feed = feed
-        self.salt = salt
+        self.fertilizer_usage = fertilizer_usage
+        self.feed_usage = feed_usage
+        self.salt_usage = salt_usage
         self.maintenance = maintenance
         self.limit = limit
         self.price = price
@@ -38,9 +38,9 @@ class Fish :
         else:
             self.sell = sell
             return {
-                'fertilizer': sell * self.fertilizer,
-                'feed': sell * self.feed,
-                'salt': sell* self.salt,
+                'fertilizer usage': sell * self.fertilizer_usage,
+                'feed usage': sell * self.feed_usage,
+                'salt usage': sell* self.salt_usage,
                 'maintenance' : sell *self.maintenance /5
               }
             

@@ -47,10 +47,10 @@ class Fish :
     
     
 #test 交作業刪
-fish_instance = Fish('', 0, 0, 0, 0, 0, 0)  # 建立臨時 Fish 實例以調用 fish_detail 方法
-fish_list = fish_instance.fish_detail()  # 初始化魚類型
-for fish in fish_list:
-    resources = fish.fish_resource(30)  # 假設每種魚賣出10條
-    if resources:
-        print(fish.name, 'Resources:' + str(resources))
+#fish_instance = Fish('', 0, 0, 0, 0, 0, 0)  # 建立臨時 Fish 實例以調用 fish_detail 方法
+#fish_list = fish_instance.fish_detail()  # 初始化魚類型
+#for fish in fish_list:
+    #resources = fish.fish_resource(30)  # 假設每種魚賣出10條
+    #if resources:
+        #print(fish.name, 'Resources:' + str(resources))
         

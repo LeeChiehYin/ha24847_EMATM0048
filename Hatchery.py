@@ -30,7 +30,6 @@ class Hatchery:
     
 
     #Cash
-
     def cost (self): #計算成本
         """ 成本包含 1500,technicians warehouse cost 跟補滿warehouse的錢 """
         #self.cost = 1500 + (tech_count*500) + (warehouse.fertilizer*(origin-usage))+ (warehouse.feed*(origin-usage)) + (warehouse.salt*(origin-usage))
@@ -41,10 +40,12 @@ class Hatchery:
         total_cost = base_cost +tech_cost + warehouse_fee+ warehouse_add
         return total_cost
     
-    def money (self, sell, price): #計算當前現金餘額(cash)
-        profit = sell * price
-        total_cost = self.cost()
-        self.cash += profit-total_cost
+    def money (self, price): #計算當前現金餘額(cash)
+        fish_sales = self.fish_type.sell #從Fish_type中獲得sell數值
+        if fish_sales > 0:
+            profit = fish_sales * price
+            total_cost = self.cost()
+            self.cash += profit-total_cost
         return self.cash
     
     #Technician
@@ -76,7 +77,34 @@ class Hatchery:
                 else: #如果list是空的
                     print('The Technician list is empty!')
                     break
+
+    #確認資源或人力到底夠不夠
+    def check(self, resource_need, workload):
+        x_enough = [] #make a list of insufficient resource
+        
+        for resource, need in resource_need.items():
+            if resource in self.supply:
+                usable = self.supply[resource]['origin'] 
+                if usable <need: #資源不足
+                    x_enough.append("{resource} need {need}, storage {usable}")
+                
+        tech_work = self.tech_count * 9
+        if workload > tech_work: #如果工作量大於tech工作
+            x_enough.append(f"Insufficient labor: required {workload} weeks, available {tech_work}")
+            
+        if x_enough:
+            for things in x_enough:
+                print(things)
+            return False, x_enough
+        else:
+            return True, [] #如果資源跟人工都夠
     
-    def workload(self):
-        total_workload = self.tech_count * 9
-        return total_workload
+    def remain(self, resource_need, workload):
+        for resource, used in resource_need.items():
+            if resource in self.supply:
+                self.supply[resource]['origin'] -=used
+        tech_work = self.tech_count *9
+        tech_work -= workload
+        
+                
+        

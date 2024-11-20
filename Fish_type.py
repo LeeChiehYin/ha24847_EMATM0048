@@ -28,7 +28,7 @@ class Fish :
         fish_list = [cf, ts, ab, pc, ff, mb]
         return fish_list
 
-    def fish_resource(self, sell):
+    def fish_resource(self, sell): #要賣掉的魚會用掉多少資源 計算
         if sell > self.limit:
             print(sell, 'exceeds the limit for', self.name)
             return None # #避免被納入計算
@@ -40,8 +40,9 @@ class Fish :
             return {
                 'fertilizer': sell * self.fertilizer,
                 'feed': sell * self.feed,
-                'salt': sell* self.salt
-            }
+                'salt': sell* self.salt,
+                'maintenance' : sell *self.maintenance /5
+              }
             
     
     
@@ -51,5 +52,5 @@ fish_list = fish_instance.fish_detail()  # 初始化魚類型
 for fish in fish_list:
     resources = fish.fish_resource(30)  # 假設每種魚賣出10條
     if resources:
-        print(fish.name, 'Resources:', str(resources))
+        print(fish.name, 'Resources:' + str(resources))
         

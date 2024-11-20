@@ -13,11 +13,11 @@ quarter = int(input('Please entr number of quarters:'))
 tech_count = 0
 tech_list = []
 from Fish_type import Fish
-from Hatchery import Hatchery
-hatchery = Hatchery(cash=10000,tech_count=0)
+#from Hatchery import Hatchery
+#hatchery = Hatchery(cash=10000,tech_count=0)
 
 for quarter_count in range(1, quarter + 1):
-    print('{:=^50s}'.format('STIMULATING quarter'+str(quarter_count)))
+    print('{:=^50s}'.format('STIMULATING quarter' + str(quarter_count)))
     print('{:=^50s}'.format(''))
     
     #Technician5
@@ -58,43 +58,36 @@ for quarter_count in range(1, quarter + 1):
                 #print('Current number of technicians:', tech_count)
                 #print('Current Technicain list:', tech_list)
                 for name in tech_list:
-                    print('Hired',name,'weekly rate = 500 in quarter', quarter_count)
+                    print('Hired',name,'weekly rate = 500 in quarter' + str(quarter_count))
                 break
            
         except ValueError:
              print('Please enter an integer number.')
              
     #Fish Demand
-    fish_list = Fish.fish_detail()
+    fish_instance =Fish('',0,0,0,0,0,0)
+    fish_list = fish_instance.fish_detail()
+    
     for fish in fish_list:
         while True:
             try:
-                sell = int(input("Please enter how much", fish.name, "you'd like to sell in the quarter"))
-                if sell < 0:
-                    print('Invalid : The number of fish you sell should be 0 or positive integer!')
-                elif sell > fish.limit:
-                    print('Exceeds the limit for', fish.name)
-                else:
-                    fish.sell = sell
+                sell = int(input(f"Please enter how many {fish.name} you'd like to sell in the quarter :"))
+                resources = fish.fish_resource(sell)
+                if resources: #若返回值有效，退出迴圈
+                    print(fish.name, 'Resources needed:', resources) #檢查用 交作業可刪 Insufficient
+                    break
             except ValueError:
                 print("Invalid : Please enter a valid integer.")
             
-            
-            #cf_sell = int(input("Please enter how much 'Clef Fins' you'd like to sell in the quarter"))
-            #ts_sell = int(input("Please enter how much 'Timpani Snapper' you'd like to sell in the quarter"))
-            #ab_sell = int(input("Please enter how much 'Andalusian Brim' you'd like to sell in the quarter"))
-            #pc_sell = int(input("Please enter how much 'Plagal Cod' you'd like to sell in the quarter"))
-            #ff_sell = int(input("Please enter how much 'Fugue Flounder' you'd like to sell in the quarter"))
-            #mb_sell = int(input("Please enter how much 'Modal Bass' you'd like to sell in the quarter"))  
     for fish in fish_list:
-        print(fish.name, 'demand :', fish.limit, 'sell :', fish.sell, ';', fish,sell)  
+        print(fish.name, 'demand:', fish.limit, 'sell:', fish.sell)  
 
     
-           # for fish in fish_list:
-                #print('Fish', fish.name, ', demand', fish.limit, ', sell', fish.sell, ':',  fish.limit)
+          
     
     #Insufficient Calculation
-    
+    #or fish in fish_list:
+        #f fish.maintenance , fish.fertilizer , fish.feed , fish.salt
     #Showing weekly and quarterly salary
     
     #Showing Paid rent/utilities 1500

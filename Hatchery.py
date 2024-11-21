@@ -18,7 +18,7 @@ class Hatchery:
         else:
             self.tech_list = []                     
                 
-    #Supply
+    #Supply 好像可以刪
     def supply(self, origin, main, aux, depre, warehouse ):
         self.origin = origin
         self.main = main

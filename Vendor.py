@@ -12,6 +12,9 @@ class Vendor:
         self.fertilizer_p = fertilizer_p
         self.feed_p = feed_p 
         self.salt_p = salt_p
-        
-SL = Vendor('Slippery Lakes', 0.3, 0.1, 0.05)
-SW = Vendor('Scaly Wholescaler', 0.2, 0.4, 0.25) 
+ 
+    def vendor_detail(self):
+        SL = Vendor('Slippery Lakes', 0.3, 0.1, 0.05)
+        SW = Vendor('Scaly Wholescaler', 0.2, 0.4, 0.25) 
+        vendor_list = [SL,SW]
+

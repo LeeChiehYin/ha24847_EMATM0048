@@ -9,12 +9,22 @@ Created on Thu Nov 14 19:29:42 2024
 #Description
 
 #Quarter, Technicains
-quarter = int(input('Please enter number of quarters:'))
 from Fish_type import Fish
 from Hatchery import Hatchery
+#from Vendor import Vendor
 hatchery = Hatchery(cash=10000, tech_count = 0, tech_list=[])
 
-for quarter_count in range(1, quarter + 1):
+while True: #quarter can only be a positive integar
+    try:
+        quarter = int(input('Please enter number of quarters:'))
+        if quarter >0:
+            break
+        else:
+            print('Invalid : The number of quarter should be positive!')
+    except ValueError: # for non-numeric, tell customer to enter a valid integer float will also be classified here
+        print('Invalid : Please enter a positive integer number!')
+        
+for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
     print('{:=^50s}'.format('STIMULATING QUARTER' + str(quarter_count)))
     print('{:=^50s}'.format(''))
     
@@ -24,15 +34,15 @@ for quarter_count in range(1, quarter + 1):
             tech_change = int(input('To add enter positive, to remove enter negtive, no change enter 0.\n>>>Please enter number of technicians:'))
             new_tech_count = hatchery.tech_count + tech_change #先建一個new避免規定外呃數值被算入正式tech        
             if new_tech_count < 1:
-                print('You need at least 1 technician in this quarter.')
+                print('Invalid : You need at least 1 technician in this quarter.')
             elif new_tech_count > 5:
-                print('Sorry, you cannot hire more than 5 technicians.')
+                print('Invalid : Sorry, you cannot hire more than 5 technicians.')
             else:
                 hatchery.decide_tech(tech_change)
                 hatchery.current_technician(tech_change, tech_list = hatchery.tech_list)
                 
-                print('Current number of technicains :', hatchery.tech_count)
-                print('Current Technician list :', hatchery.tech_list)
+                print('Current number of technicains :', hatchery.tech_count) #test 交作業時可刪
+                print('Current Technician list :', hatchery.tech_list) #test 交作業時可刪
                 for name in hatchery.tech_list:
                     print('Hired', name, 'weekly rate = 500 in quarter', quarter_count)
                 break  # Exit the technician input loop when done
@@ -46,9 +56,10 @@ for quarter_count in range(1, quarter + 1):
     total_usage = {
         'total fertilizer usage': 0,
         'total feed usage': 0,
-        'total salt usage': 0,
+        'total salt usage': 0
         }
     workload = 0
+    sell_input = {} #為了輸出每個魚種user的input
     
 
     for fish in fish_list:
@@ -71,18 +82,21 @@ for quarter_count in range(1, quarter + 1):
                         #for resource, remain in remaining.items():  # 使用 remaining 输出剩余资源
                             #print(resource, 'need', resources[resource], 'storage', remain)
                         fish.sell = 0   
+                        sell_input[fish.name] = sell
                         break   
                     
                     elif enough:#如果資源夠，就讓加進total usage
                          total_usage =new_total_usage
                          fish.sell =sell
                          workload = new_workload
+                         sell_input[fish.name] = sell
                          print('Resources needed:', total_usage)
                          print('Labor needed:', workload)
                          break
                     
                     else: #資源不足  
                         fish.sell = 0
+                        sell_input[fish.name] = sell
                         for i in xenough:
                             print('You cannot sell more fish because',i)
                         print('Insufficient labour : required', workload,' weeks, available',tech_work-workload)
@@ -99,15 +113,10 @@ for quarter_count in range(1, quarter + 1):
                 print("Invalid : Please enter a valid integer.")
         
     for fish in fish_list:
-        print(fish.name, 'demand:', fish.limit, 'sell:', fish.sell)  
+        print(fish.name, 'demand:', fish.limit, 'sell:', sell_input[fish.name]  ,':', fish.sell)  
     for resource, remain in remaining.items():
         print(resource, 'need', resources[resource], 'storage', remain)   
-    #for i in final_usage:
-        #print(i)
-        #print('Insufficient labour : required', workload/5,' weeks, available', )
-        #print('Insufficient ingredients:')
-        #for j in xenough:
-            #rint(j)
+
     
     #Showing weekly and quarterly salary
     for name in hatchery.tech_list:
@@ -117,6 +126,25 @@ for quarter_count in range(1, quarter + 1):
     
     
     #Warehouse cost
-    #for item in resources:
-    #print('Warehouse Main :'item, Hactery.supply['warehouse'])
-    #print('Warehouse Auxilliary :'item, Hactery.supply['warehouse'])
+    for item,number in hatchery.supply.items():
+        print('Warehouse Main :', item, fish.sell*number['warehouse'])
+        print('Warehouse Auxilliary :', item, number['warehouse'])
+    
+    #Choosing Vendors
+    print('List of Vendors')
+    print('1. Slippery Lakes') #改成vendor name
+    print('2. Scaly Wholesaler') #改成vendor name
+    vendor = input ('Enter number of vendor to purchase from:')
+    print('Hatchery Name: Eastaboga, Cash: 9618.63')
+ 
+    print('Warehouse Main')
+    for item, number in hatchery.supply.items():
+        print(item.capitalize(), number['main'], '(capacity =', number['main'], ')')
+    print('Warehouse Auxilliary')
+    for item, number in hatchery.supply.items():
+        print(item.capitalize(), number['main'], '(capacity =', number['main'], ')')
+    
+    print('Technicians')
+    for name in hatchery.tech_list:
+        print('Technician', name, 'weekly rate=500')
+ 

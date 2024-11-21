@@ -16,6 +16,7 @@ class Fish :
         self.limit = limit
         self.price = price
         self.sell = 0 #initializing the sell of each fish type
+
     
     #Initialzing all fish type and return fish list
     def fish_detail(self): 
@@ -37,13 +38,16 @@ class Fish :
             return None #避免被納入計算
         else:
             self.sell = sell
+            
             return {
-                'fertilizer usage': sell * self.fertilizer_usage,
-                'feed usage': sell * self.feed_usage,
-                'salt usage': sell* self.salt_usage,
-                'maintenance' : sell *self.maintenance /5
+                'fertilizer usage': self.fertilizer_usage *sell,
+                'feed usage': self.feed_usage *sell,
+                'salt usage': self.salt_usage *sell,
+                'maintenance' : self.maintenance *sell/5
               }
             
+            
+      
     
     
 #test 交作業刪

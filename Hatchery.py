@@ -13,7 +13,7 @@ class Hatchery:
                        }
         self.cash = cash #cash balance
         self.tech_count = tech_count #the number of current technicians
-        if tech_list:
+        if tech_list :
             self.tech_list = tech_list
         else:
             self.tech_list = []                     
@@ -79,32 +79,36 @@ class Hatchery:
                     break
 
     #確認資源或人力到底夠不夠
-    def check(self, resource_need, workload):
+    def check(self, need, workload):
         x_enough = [] #make a list of insufficient resource
-        
-        for resource, need in resource_need.items():
+        remaining ={}
+        for resource, needs in need.items(): #能用的資源跟需要的
             if resource in self.supply:
                 usable = self.supply[resource]['origin'] 
-                if usable <need: #資源不足
-                    x_enough.append("{resource} need {need}, storage {usable}")
+                if usable <needs: #資源不足
+                    x_enough.append(f"{resource} need {need}, storage {usable}")
+                remaining[resource] =usable - needs
+            break
                 
         tech_work = self.tech_count * 9
         if workload > tech_work: #如果工作量大於tech工作
-            x_enough.append(f"Insufficient labor: required {workload} weeks, available {tech_work}")
+            x_enough.append(f"Insufficient labor: required {workload} weeks, available {tech_work - workload}")
             
+        
         if x_enough:
-            for things in x_enough:
-                print(things)
-            return False, x_enough
+            return False, x_enough, tech_work, remaining
         else:
-            return True, [] #如果資源跟人工都夠
-    
-    def remain(self, resource_need, workload):
+            return True, [], tech_work, remaining
+        
+
+            
+        
+    """def remain(self, resource_need, workload):
         for resource, used in resource_need.items():
             if resource in self.supply:
                 self.supply[resource]['origin'] -=used
         tech_work = self.tech_count *9
-        tech_work -= workload
+        tech_work -= workload"""
         
                 
         

@@ -8,8 +8,8 @@ Created on Thu Nov 14 20:20:26 2024
 class Hatchery:
     def __init__(self, cash, tech_count, tech_list = None):
         self.supply = {'fertilizer' : {'origin':30, 'main':20, 'aux':10, 'depre':0.4, 'warehouse':0.1},
-                       'feed' : {'origin':600, 'main':400,'aux':200, 'derpe':0.1,'warehouse': 0.001},
-                       'salt' : {'origin':300, 'main':200,'aux':100, 'depre':0,'warehouse': 0.001}
+                       'feed' : {'origin':600, 'main':400,'aux':200, 'derpe':0.1,'warehouse': 1},
+                       'salt' : {'origin':300, 'main':200,'aux':100, 'depre':0,'warehouse': 1}
                        }
         self.cash = cash #cash balance
         self.tech_count = tech_count #the number of current technicians
@@ -17,7 +17,18 @@ class Hatchery:
             self.tech_list = tech_list
         else:
             self.tech_list = []                     
-                
+    
+
+    def hatchery_name():
+        while True:
+            h_name = input('Please enter your Hatchery name :').strip()
+            if not h_name: #無效輸入
+                print('Invaild: Please enter a name for your Hatchery!')
+            else:
+                h_name = h_name[0].upper() + h_name[1:]
+                return h_name
+            
+            
     #Supply 好像可以刪
     def supply(self, origin, main, aux, depre, warehouse ):
         self.origin = origin
@@ -60,12 +71,12 @@ class Hatchery:
         """
         if tech_change > 0:
             for i in range(tech_change):
-                name_add = input('Please enter name of new technician.')
+                name_add = input('Please enter name of new technician.').strip().capitalize() #縮排，首字大寫
                 self.tech_list.append(name_add)
         elif tech_change < 0:
             for i in range(abs(tech_change)):
                 if self.tech_list:
-                    name_remove = input("Please enter the name of the technicians you'd like to remove :")
+                    name_remove = input("Please enter the name of the technicians you'd like to remove :").strip().capitalize()
                     if name_remove in tech_list:
                         self.tech_list.remove(name_remove)
                        
@@ -84,11 +95,12 @@ class Hatchery:
         remaining ={}
         for resource, needs in need.items(): #能用的資源跟需要的
             if resource in self.supply:
-                usable = self.supply[resource]['origin'] 
+                usable = self.supply[resource]['origin']
+                remaining[resource] =usable - needs
                 if usable <needs: #資源不足
                     x_enough.append(f"{resource} need {need}, storage {usable}")
-                remaining[resource] =usable - needs
-            break
+               
+    
                 
         tech_work = self.tech_count * 9
         if workload > tech_work: #如果工作量大於tech工作
@@ -100,15 +112,47 @@ class Hatchery:
         else:
             return True, [], tech_work, remaining
         
+    #warehouse cost    
+    def  warehouse_use(self, total_usage):
+       usage = {
+            'fertilizer': {'main_use': 0, 'aux_use': 0},
+            'feed': {'main_use': 0, 'aux_use': 0},
+            'salt': {'main_use': 0, 'aux_use': 0}
+            }
+       remaining ={
+            'fertilizer':{'main':20,'aux':10},
+            'feed':{'main':400,'aux':200},
+            'salt':{'main':200,'aux':100}
+            }
+       
+       for resource in total_usage: #從total_usage找資料
+           if resource in remaining: #如果remaining裡有這類資料
+               amount = total_usage[resource]
+        
+               if amount > remaining[resource]['main']: #如果總量大於main庫存
+                   usage[resource]['main_use'] = remaining[resource]['main'] #main全部用完
+                   remaining[resource]['main'] = 0 #用完了
 
+                   r_amount = amount - usage[resource]['main_use'] #剩下的(r_amount)為總量-main庫存
+                   if r_amount <= remaining[resource]['aux']: #如果剩下的量小於等於aux庫存(絕對的)
+                       usage[resource]['aux_use'] = r_amount #aux的用量就是剩下的量
+                       remaining[resource]['aux'] -= r_amount #aux剩下的量為扣掉剩下的總量後的值
+                   else:  # 如果辅助库存不足
+                       usage[resource]['aux_use'] = remaining[resource]['aux']
+                       remaining[resource]['aux'] = 0
+                       
+               else:#如果總量小於等於main庫存
+                   usage[resource]['main_use'] = amount #aux的用量就是總量
+                   remaining[resource]['main'] -= amount #main剩下的量為扣掉總量後的值
+   
+       return usage, remaining
+
+ 
+        
+   
             
         
-    """def remain(self, resource_need, workload):
-        for resource, used in resource_need.items():
-            if resource in self.supply:
-                self.supply[resource]['origin'] -=used
-        tech_work = self.tech_count *9
-        tech_work -= workload"""
+
         
                 
         

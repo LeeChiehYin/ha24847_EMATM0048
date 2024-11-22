@@ -11,7 +11,7 @@ Created on Thu Nov 14 19:29:42 2024
 #Quarter, Technicains
 from Fish_type import Fish
 from Hatchery import Hatchery
-#from Vendor import Vendor
+from Vendor import Vendor
 hatchery = Hatchery(cash=10000, tech_count = 0, tech_list=[])
 
 while True: #quarter can only be a positive integar
@@ -54,9 +54,9 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
     fish_instance =Fish('',0,0,0,0,0,0)
     fish_list = fish_instance.fish_detail()
     total_usage = {
-        'total fertilizer usage': 0,
-        'total feed usage': 0,
-        'total salt usage': 0
+        'fertilizer': 0,
+        'feed': 0,
+        'salt': 0
         }
     workload = 0
     sell_input = {} #為了輸出每個魚種user的input
@@ -70,9 +70,9 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
                 
                 if resources:  # 如果返回有效資源需求，累加到總需求
                     new_total_usage = total_usage.copy()
-                    new_total_usage['total fertilizer usage'] += resources['fertilizer usage']
-                    new_total_usage['total feed usage'] += resources['feed usage']
-                    new_total_usage['total salt usage'] += resources['salt usage']
+                    new_total_usage['fertilizer'] += resources['fertilizer usage']
+                    new_total_usage['feed'] += resources['feed usage']
+                    new_total_usage['salt'] += resources['salt usage']
                     new_workload = workload + resources['maintenance']
                     
                     enough, xenough, tech_work, remaining = hatchery.check(total_usage, workload)
@@ -114,8 +114,8 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
         
     for fish in fish_list:
         print(fish.name, 'demand:', fish.limit, 'sell:', sell_input[fish.name]  ,':', fish.sell)  
-    for resource, remain in remaining.items():
-        print(resource, 'need', resources[resource], 'storage', remain)   
+    #for resource, remain in remaining.items():
+        #print(resource, 'need', [resource], 'storage', remain) not work
 
     
     #Showing weekly and quarterly salary
@@ -126,16 +126,34 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
     
     
     #Warehouse cost
-    for item,number in hatchery.supply.items():
-        print('Warehouse Main :', item, fish.sell*number['warehouse'])
-        print('Warehouse Auxilliary :', item, number['warehouse'])
-    
-    #Choosing Vendors
-    print('List of Vendors')
-    print('1. Slippery Lakes') #改成vendor name
-    print('2. Scaly Wholesaler') #改成vendor name
-    vendor = input ('Enter number of vendor to purchase from:')
-    print('Hatchery Name: Eastaboga, Cash: 9618.63')
+    #hatchery = Hatchery()
+    usage,remaining = hatchery.warehouse_use(total_usage)
+    print(usage) #test
+    print("Remaing:", remaining)#test
+    print(total_usage)#test
+    for resource, remain in remaining.items():#test
+        print(resource, 'remaining:', remain)#test
+    for resource, use in usage.items(): # 輸出每個資源的使用情況#test
+        print('Usage of', resource, ': Main used:', use['main_use'], ', Aux used:', use['aux_use'])#test
+    for resource, remain in remaining.items():   
+        if resource in hatchery.supply: # 確保有資源，並計算倉庫費用
+            number = hatchery.supply[resource]
+            
+            #wh_main_c = number['warehouse'] * remain['main']
+            #wh_aux_c = number['warehouse'] * remain['aux']
+            #print('Warehouse Main :', number['main'], 'cost', remain['main']*number[resource]['warehouse'])
+            #print('Warehouse Aux :', number['aux'], 'cost', remain['aux']*number[resource]['warehouse'])
+            print('Warehouse Main cost:', round(number['warehouse'] * remain['main'],2)) #四捨五入到小數點第二位
+            print('Warehouse Auxilliary cost:', round(number['warehouse'] * remain['aux'],2))
+            
+    #Choosing Vendors 
+    vendor_instance = Vendor('', 0, 0, 0)
+    select = vendor_instance.vendor_detail()
+    print('Select:', select.name)
+            
+    #Hatchery name
+    h_name = Hatchery.hatchery_name()
+    print('Hatchery Name:',h_name, 'Cash: 9618.63')
  
     print('Warehouse Main')
     for item, number in hatchery.supply.items():

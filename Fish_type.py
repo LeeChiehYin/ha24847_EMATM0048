@@ -45,16 +45,16 @@ class Fish:
                 'salt usage': self.salt_usage *sell,
                 'maintenance' : self.maintenance *sell/5
               }
-            
-    def earning(self, fish_list):
+     
+    def earning(self):
         earn =0 #單一種魚賺的錢
-        self.sell * self.price
+        earn= self.sell * self.price
         return earn 
         
-        earning =0 #全部魚賺的錢
+        """earning =0 #全部魚賺的錢
         for fish in fish_list:
             earning +=earn
-        return earning
+        return earning"""
      
         
       

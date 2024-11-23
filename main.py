@@ -26,13 +26,11 @@ while True: #quarter can only be a positive integar
         
         
 for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
-    if hatchery.cash>0:
         print('{:=^50s}'.format(''))
         print('{:=^50s}'.format('STIMULATING QUARTER' + str(quarter_count)))
         print('{:=^50s}'.format(''))
-    else:
-        print('{:=^50s}'.format('FINAL STATE QUARTER' + str(quarter_count)))
-    
+
+
     #Technician
     while True:
         try:
@@ -54,7 +52,8 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
         except ValueError:
             print('Please enter an integer number.')
           
-             
+    #test
+    print(hatchery.cash)         
     #Fish Demand
     fish_instance =Fish('',0,0,0,0,0,0)
     fish_list = fish_instance.fish_detail()
@@ -130,7 +129,7 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
     
     #Warehouse cost
     #hatchery = Hatchery()
-    usage,remaining,wh_main_c, wh_aux_c = hatchery.warehouse_use(total_usage)
+    usage,remaining,wh_main_c, wh_aux_c,wh_c = hatchery.warehouse_use(total_usage)
     print(usage) #test
     print("Remaing:", remaining)#test
     print(total_usage)#test
@@ -148,8 +147,32 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
     print('Select:', select.name)
     payment = select.buy(remaining)
     print("payment:", payment) #test
-    #Hatchery name
-    new_balance = hatchery.balance()
+    
+    #Hatchery name cash balance  
+    fish = Fish('', 0, 0, 0, 0, 0, 0)
+    fish_list = fish.fish_detail()
+    earning = sum(fish.earning() for fish in fish_list)
+  
+    base = 1500
+    tech_cost = hatchery.tech_count * 6000 #一季的薪水
+    wh = wh_c #warehouse cost
+    """for r in wh_c:
+        wh+=sum(wh_c[r]['main']+wh_c[r]['aux'])"""
+        
+    wh_r = 0#補滿warehouse的錢
+    for r in payment:
+        wh_r+=payment[r]['main']+payment[r]['aux']
+        
+    change = earning - (base +tech_cost + wh_c+ wh_r)
+    hatchery.cash += change
+    #test
+    print('earning:',earning)
+    print('tech_cost:',tech_cost)
+    print('warehouse cost:',wh)
+    print('warehouse refill:',wh_r)
+    print('change:',change)
+    print('cash balance',hatchery.cash)
+    
     h_name = Hatchery.hatchery_name()
     print('Hatchery Name:',h_name, 'Cash Balance :', hatchery.cash) 
     
@@ -166,6 +189,24 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
         print('Technician', name, 'weekly rate=500')
 
     print('END OF QUARTER', quarter_count)
+    
+#檢查cash balance是否還有錢，沒有就final state    
+if hatchery.cash>0:
+    print('{:=^50s}'.format('FINAL STATE QUARTER' + str(quarter_count)))
+    print('Hatchery Name:',h_name, 'Cash Balance :', hatchery.cash) 
+    print('Warehouse Main') 
+    for item, number in hatchery.supply.items():
+            print(item.capitalize(), remaining['main'] , '(capacity =', number['main'], ')')
+    print('Warehouse Auxilliary')
+    for item, number in hatchery.supply.items():
+        print(item.capitalize(), remaining['main'], '(capacity =', number['main'], ')')
+    print('Technicians')
+    for name in hatchery.tech_list:
+        print('Technician', name, 'weekly rate=500')
+    break
+
+else:
+    continue
 
 
     

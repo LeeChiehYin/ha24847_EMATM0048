@@ -129,7 +129,7 @@ class Hatchery:
                wh_aux_c =round(self.supply[r]['warehouse'] * remain['aux'],2)
                wh_c = wh_main_c + wh_aux_c  
     
-       return usage, remaining, wh_main_c, wh_aux_c
+       return usage, remaining, wh_main_c, wh_aux_c, wh_c
 
  
         
@@ -150,11 +150,11 @@ class Hatchery:
     
     
     #Cash
-    def money_change (self, earning, wh, wh_c, wh_r, payment): #計算成本
-        """ 
+    """def money_change (self, earning, wh, wh_c, wh_r, payment): #計算成本
+       
         賺的錢就是賣出的魚*魚的金額
         成本包含 1500,technicians warehouse cost 跟補滿warehouse的錢 
-        """
+        
         #earning
         #self.cost = 1500 + (tech_count*500) + (warehouse.fertilizer*(origin-usage))+ (warehouse.feed*(origin-usage)) + (warehouse.salt*(origin-usage))
         base = 1500
@@ -175,7 +175,7 @@ class Hatchery:
         self.cash += change
         return self.cash
     
-        """fish_sales = self.fish_type.sell #從Fish_type中獲得sell數值
+        fish_sales = self.fish_type.sell #從Fish_type中獲得sell數值
         if fish_sales > 0:
             profit = fish_sales * price
             total_cost = self.cost()

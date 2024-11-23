@@ -6,7 +6,7 @@ Created on Thu Nov 14 23:36:25 2024
 """
 
 #Fish type class
-class Fish :
+class Fish:
     def __init__(self, name, fertilizer_usage, feed_usage, salt_usage, maintenance, limit, price):
         self.name = name
         self.fertilizer_usage = fertilizer_usage
@@ -46,7 +46,17 @@ class Fish :
                 'maintenance' : self.maintenance *sell/5
               }
             
-            
+    def earning(self, fish_list):
+        earn =0 #單一種魚賺的錢
+        self.sell * self.price
+        return earn 
+        
+        earning =0 #全部魚賺的錢
+        for fish in fish_list:
+            earning +=earn
+        return earning
+     
+        
       
     
     

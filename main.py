@@ -24,9 +24,14 @@ while True: #quarter can only be a positive integar
     except ValueError: # for non-numeric, tell customer to enter a valid integer float will also be classified here
         print('Invalid : Please enter a positive integer number!')
         
+        
 for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
-    print('{:=^50s}'.format('STIMULATING QUARTER' + str(quarter_count)))
-    print('{:=^50s}'.format(''))
+    if hatchery.cash>0:
+        print('{:=^50s}'.format(''))
+        print('{:=^50s}'.format('STIMULATING QUARTER' + str(quarter_count)))
+        print('{:=^50s}'.format(''))
+    else:
+        print('{:=^50s}'.format('FINAL STATE QUARTER' + str(quarter_count)))
     
     #Technician
     while True:
@@ -39,7 +44,7 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
                 print('Invalid : Sorry, you cannot hire more than 5 technicians.')
             else:
                 hatchery.decide_tech(tech_change)
-                hatchery.current_technician(tech_change, tech_list = hatchery.tech_list)
+                hatchery.current_tech(tech_change, tech_list = hatchery.tech_list)
                 
                 print('Current number of technicains :', hatchery.tech_count) #test 交作業時可刪
                 print('Current Technician list :', hatchery.tech_list) #test 交作業時可刪
@@ -104,8 +109,6 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
                         #for resource, remain in remaining.items():
                             #print(resource, 'need', resources[resource], 'storage', remain)
                         break
- 
-
                     
                 else:
                     print('Invalid: Please try again')
@@ -127,7 +130,7 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
     
     #Warehouse cost
     #hatchery = Hatchery()
-    usage,remaining = hatchery.warehouse_use(total_usage)
+    usage,remaining,wh_main_c, wh_aux_c = hatchery.warehouse_use(total_usage)
     print(usage) #test
     print("Remaing:", remaining)#test
     print(total_usage)#test
@@ -135,34 +138,34 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
         print(resource, 'remaining:', remain)#test
     for resource, use in usage.items(): # 輸出每個資源的使用情況#test
         print('Usage of', resource, ': Main used:', use['main_use'], ', Aux used:', use['aux_use'])#test
-    for resource, remain in remaining.items():   
-        if resource in hatchery.supply: # 確保有資源，並計算倉庫費用
-            number = hatchery.supply[resource]
-            
-            #wh_main_c = number['warehouse'] * remain['main']
-            #wh_aux_c = number['warehouse'] * remain['aux']
-            #print('Warehouse Main :', number['main'], 'cost', remain['main']*number[resource]['warehouse'])
-            #print('Warehouse Aux :', number['aux'], 'cost', remain['aux']*number[resource]['warehouse'])
-            print('Warehouse Main cost:', round(number['warehouse'] * remain['main'],2)) #四捨五入到小數點第二位
-            print('Warehouse Auxilliary cost:', round(number['warehouse'] * remain['aux'],2))
+    #for resource, cost in wh_main_c.item():
+    print('Warehouse Main cost:', wh_main_c) #四捨五入到小數點第二位
+    print('Warehouse Auxilliary cost:', wh_aux_c)
             
     #Choosing Vendors 
     vendor_instance = Vendor('', 0, 0, 0)
     select = vendor_instance.vendor_detail()
     print('Select:', select.name)
-            
+    payment = select.buy(remaining)
+    print("payment:", payment) #test
     #Hatchery name
+    new_balance = hatchery.balance()
     h_name = Hatchery.hatchery_name()
-    print('Hatchery Name:',h_name, 'Cash: 9618.63')
- 
-    print('Warehouse Main')
+    print('Hatchery Name:',h_name, 'Cash Balance :', hatchery.cash) 
+    
+    #warehose refill
+    print('Warehouse Main') 
     for item, number in hatchery.supply.items():
-        print(item.capitalize(), number['main'], '(capacity =', number['main'], ')')
+            print(item.capitalize(), number['main'] , '(capacity =', number['main'], ')')
     print('Warehouse Auxilliary')
     for item, number in hatchery.supply.items():
         print(item.capitalize(), number['main'], '(capacity =', number['main'], ')')
-    
+
     print('Technicians')
     for name in hatchery.tech_list:
         print('Technician', name, 'weekly rate=500')
- 
+
+    print('END OF QUARTER', quarter_count)
+
+
+    

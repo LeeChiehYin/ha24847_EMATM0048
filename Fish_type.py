@@ -47,9 +47,7 @@ class Fish:
               }
      
     def earning(self):
-        earn =0 #單一種魚賺的錢
-        earn= self.sell * self.price
-        return earn 
+        return self.sell * self.price
         
         """earning =0 #全部魚賺的錢
         for fish in fish_list:

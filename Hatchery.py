@@ -19,7 +19,6 @@ class Hatchery:
             self.tech_list = tech_list
         else:
             self.tech_list = []                     
-    
 
     def hatchery_name():
         while True:
@@ -47,33 +46,33 @@ class Hatchery:
         elif tech_change < 0:
             for i in range(abs(tech_change)):
                 if self.tech_list:
-                    name_remove = input("Please enter the name of the technicians you'd like to remove :").strip().capitalize()
-                    if name_remove in tech_list:
-                        print('Let go', name_remove,', weekly rate=500 in this quarter')
-                        self.tech_list.remove(name_remove)
-                       
-                    else: #如果name_remove不在list
-                        print('Technician',name_remove,'is not in the Technician list. Please check the name again!')
-                        print('Here are the technicians in last quarter:',tech_list)
-                            #except ValueError:
-                            #print('Please enter a name on the technician list.',tech_list)
+                    while True:
+                        name_remove = input("Please enter the name of the technicians you'd like to remove :").strip().capitalize()
+                        if name_remove in tech_list:
+                            print('Let go', name_remove,', weekly rate=500 in this quarter')
+                            self.tech_list.remove(name_remove)
+                            break
+                        else: #如果name_remove不在list
+                            print('Technician',name_remove,'is not in the Technician list. Please check the name again!')
+                            print('Here are the technicians in last quarter:',tech_list)
+                                #except ValueError:
+                                #print('Please enter a name on the technician list.',tech_list)
                 else: #如果list是空的
                     print('The Technician list is empty!')
                     break
 
     #確認資源或人力到底夠不夠
-    def check(self, need, workload):
+    def check(self,total_usage,workload):
         x_enough = [] #make a list of insufficient resource
         remainings ={}
-        for resource, needs in need.items(): #能用的資源跟需要的
+        for resource, need in total_usage.items(): #能用的資源跟需要的
             if resource in self.supply:
                 usable = self.supply[resource]['origin']
-                remainings[resource] =usable - needs
-                if usable <needs: #資源不足
+                remainings[resource] =usable - need
+                if usable <need: #資源不足
                     x_enough.append(f"{resource} need {need}, storage {usable}")
                
-    
-                
+       
         tech_work = self.tech_count * 9
         if workload > tech_work: #如果工作量大於tech工作
             x_enough.append(f"Insufficient labor: required {workload} weeks, available {tech_work - workload}")
@@ -119,15 +118,20 @@ class Hatchery:
                    usage[resource]['main_use'] = amount #aux的用量就是總量
                    remaining[resource]['main'] -= amount #main剩下的量為扣掉總量後的值
        
-       #warehouse cost  
-       wh_main_c =0
-       wh_aux_c =0
+       #warehouse cost 
+       wh_main_c={}
+       wh_aux_c={}
+       wh_c=0
                
        for r, remain in remaining.items():
            if r in self.supply:
-               wh_main_c +=round(self.supply[r]['warehouse'] * remain['main'],2)#四捨五入到小數點第二位
-               wh_aux_c =round(self.supply[r]['warehouse'] * remain['aux'],2)
-               wh_c = wh_main_c + wh_aux_c  
+               main_c = round(self.supply[r]['warehouse'] * remain['main'],2)
+               aux_c = round(self.supply[r]['warehouse'] * remain['aux'],2)
+               
+               wh_main_c[r]=main_c
+               wh_aux_c[r]=aux_c
+               
+               wh_c += main_c + aux_c  
     
        return usage, remaining, wh_main_c, wh_aux_c, wh_c
 

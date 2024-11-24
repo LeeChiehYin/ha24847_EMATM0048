@@ -44,7 +44,7 @@ class Fish:
                      'fertilizer usage': self.fertilizer_usage *sell,
                      'feed usage': self.feed_usage *sell,
                      'salt usage': self.salt_usage *sell,
-                     'maintenance' : self.maintenance *sell/5
+                     'maintenance' : self.maintenance *sell
                    }
             except ValueError:
                 print('Invalid : Please enter a valid integer!')

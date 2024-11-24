@@ -23,9 +23,10 @@ class Vendor:
         #vendor_list = [SL,SW]
         
         while True:
+            s=' '*4
             print('List of Vendors:')
-            print("    1. Slippery Lakes")
-            print("    2. Scaly Wholesaler")
+            print(s,'1. Slippery Lakes')
+            print(s,'2. Scaly Wholesaler')
             
             try:
                 number = input('Enter number of vendor to purchase from (1 or 2): ').strip()

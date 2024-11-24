@@ -15,7 +15,7 @@ class Vendor:
         self.fertilizer_p = fertilizer_p
         self.feed_p = feed_p 
         self.salt_p = salt_p
-        self.hatchery = Hatchery(cash=10000, tech_count=5)
+        self.hatchery = Hatchery(cash=10000, tech_count=0)
         
     def vendor_detail(self):
         SL = Vendor('1.Slippery Lakes', 0.3, 0.1, 0.05)
@@ -24,8 +24,8 @@ class Vendor:
         
         while True:
             print('List of Vendors:')
-            print("1. Slippery Lakes")
-            print("2. Scaly Wholesaler")
+            print("    1. Slippery Lakes")
+            print("    2. Scaly Wholesaler")
             
             try:
                 number = input('Enter number of vendor to purchase from (1 or 2): ').strip()
@@ -59,12 +59,15 @@ class Vendor:
             'salt': {'main': 0, 'aux': 0}
         }
 
-        dep = self.hatchery.depreciation(remaining)
+        dep,remained = self.hatchery.depreciation(remaining)
         
         for r, amount in full.items():
+            print(type(amount))  # 查看 'amount' 變量的類型
+            print(type(remaining))  # 查看 'remaining' 變量的類型
+            print(type(dep))  # 查看 'dep' 變量的類型
             x_main = amount['main']-remaining[r]['main']+dep[r]['main']  #main需要補滿的量
             x_aux = amount['aux']-remaining[r]['aux']+dep[r]['aux']  #aux需要補滿的量
-
+      
             
             if r == 'fertilizer':
                 payment[r]['main'] = x_main *self.fertilizer_p

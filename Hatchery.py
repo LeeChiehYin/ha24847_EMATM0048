@@ -6,6 +6,7 @@ Created on Thu Nov 14 20:20:26 2024
 """
 #Hatchery class (supplies, cash ,technicians):
 import math #為了無條件進位depreciation
+#from Fish_type import Fish
 
 class Hatchery:
     def __init__(self, cash, tech_count, tech_list = None):
@@ -34,6 +35,17 @@ class Hatchery:
         self.tech_count += tech_change
         return self.tech_count
     
+    """def tech_special(self):
+        #是否要有specialize技能
+        decide = input('Would you like to add specialized skill on this worker? (1=Yes, 2=No)')
+        #要怎樣的技能(maintenance*2/3)
+         while True:
+             if decide = 1: #如果同意專精
+                 print('Please choose a fish type to specialize.')
+                 s_type = input()
+                 if s_type in fish_list:
+                     maintenance"""
+    
     def current_tech(self, tech_change, tech_list):
         """
         tech_change : the number of technicians who are hired or fired in this quarter(+/-)
@@ -61,27 +73,28 @@ class Hatchery:
                     print('The Technician list is empty!')
                     break
 
-    #確認資源或人力到底夠不夠
+    #check work and resource
     def check(self,total_usage,workload):
-        x_enough = [] #make a list of insufficient resource
+        x_resource = [] #make a list of insufficient resource
         remainings ={}
-        for resource, need in total_usage.items(): #能用的資源跟需要的
-            if resource in self.supply:
-                usable = self.supply[resource]['origin']
-                remainings[resource] =usable - need
-                if usable <need: #資源不足
-                    x_enough.append(f"{resource} need {need}, storage {usable}")
-               
-       
         tech_work = self.tech_count * 9
-        if workload > tech_work: #如果工作量大於tech工作
-            x_enough.append(f"Insufficient labor: required {workload} weeks, available {tech_work - workload}")
-            
+        x_work = False #人力是否不足
         
-        if x_enough:
-            return False, x_enough, tech_work, remainings
-        else:
-            return True, [], tech_work, remainings
+        #resource check
+        for r, need in total_usage.items(): #能用的資源跟需要的
+            if r in self.supply:
+                remaining =self.supply[r]['origin'] - need
+                remainings[r] = remaining
+                if remaining<0: #資源不足
+                    x_resource.append(r)
+       
+        #work check
+        if workload > tech_work: #如果工作量大於tech工作
+            x_work= True
+            
+        enough = not x_resource and not x_work
+        return enough,x_resource,x_work,tech_work,remainings
+       
         
     #warehouse cost    
     def  warehouse_use(self, total_usage):
@@ -139,52 +152,78 @@ class Hatchery:
         
    #warehouse depreciation
     def depreciation(self, remaining):
-        
         d = {}
-        for resource, amount in remaining.items():
-            if resource in self.supply:
-                main_d = math.ceil(self.supply[resource]['depre'] * amount['main']) #依照規定depreciation要無條件進位成整數
-                aux_d = math.ceil(self.supply[resource]['depre'] * amount['aux']) 
+        remained ={} #remmain被depr過
+        for r, amount in remaining.items():
+            if r in self.supply:
+                main_d = math.ceil(self.supply[r]['depre'] * amount['main']) #依照規定depreciation要無條件進位成整數
+                aux_d = math.ceil(self.supply[r]['depre'] * amount['aux']) 
                 
-                d[resource] ={
+                d[r] ={
                     'main' : main_d,
                     'aux': aux_d,                 
                     }
-        return d
-    
-    
-    #Cash
-    """def money_change (self, earning, wh, wh_c, wh_r, payment): #計算成本
-       
-        賺的錢就是賣出的魚*魚的金額
-        成本包含 1500,technicians warehouse cost 跟補滿warehouse的錢 
-        
-        #earning
-        #self.cost = 1500 + (tech_count*500) + (warehouse.fertilizer*(origin-usage))+ (warehouse.feed*(origin-usage)) + (warehouse.salt*(origin-usage))
-        base = 1500
-        tech_cost = self.tech_count * 6000 #一季的薪水
-        wh = 0 #warehouse cost
-        for r in wh_c:
-            wh+=sum(wh_c[r]['main']+wh_c[r]['aux'])
+                
+        for r in d:
+            remained[r]={
+                'main': remaining[r]['main'] - d[r]['main'],
+                'aux': remaining[r]['aux'] - d[r]['aux']  
+                }
             
-        wh_r = 0#補滿warehouse的錢
-        for r in payment:
-            wh_r=sum(payment[r]['main']+payment[r]['aux']) 
-       
-        change = earning - (base +tech_cost + wh_c+ wh_r)
-        return change
+        return d, remained
+            
+    def bankrupt_count(self, payment, wh_r):
+        owe = []  #紀錄錢不夠
+        n = self.cash -wh_r  
+        zero = False  # 是否小於零
     
-    def balance (self): #計算當前現金餘額(cash)
-        change = self.money_change()
-        self.cash += change
-        return self.cash
+        #處理main
+        for i, wh in payment.items(): #warehouse ingredient
+            if wh['main'] > 0:  # 如果 main 有需求
+                if n >=wh['main']:  # 足夠支付
+                    n -= wh['main']  # 扣款
+                    wh['main'] = 0
+                else:  # 资金不足，无法支付
+                    owe.append(
+                        f"Can't restock {i}, insufficient funds, need {round(wh['main'],2)} from main but only have {round((self.cash-wh_r),2)}"
+                    ) 
+                    owe.append(f"Went bankrupt restocking warehouse Main")
+                    zero = True  # 小於零
+                    break
     
-        fish_sales = self.fish_type.sell #從Fish_type中獲得sell數值
-        if fish_sales > 0:
-            profit = fish_sales * price
-            total_cost = self.cost()
-            self.cash += profit-total_cost
-        return self.cash"""
+        #如果還是正數就進入處理aux
+        if not zero:  # 只有當 main 階段沒小於零時才進入 aux
+            for i, wh in payment.items(): #warehouse ingredient
+                if wh['aux'] > 0:  # 如果 aux 有需求
+                    if n >= wh['aux']:  
+                        n -= wh['aux']  
+                        wh['aux'] = 0
+                    else:  #資金不足
+                        owe.append(
+                            f"Can't restock {i}, insufficient funds, need {round(wh['aux'],2)} from aux but only have {round(n,2)}"
+                        )
+                        owe.append(f"Went bankrupt restocking warehouse Aux")
+                        break  
+        for text in owe:
+            print(text)
+        return n
+
+    def bankrupt (self,h_name, n, remained):
+        s = ' '*4
+        print('Hatchery Name:',h_name, 'Cash Balance :', round(n,2)) 
+        print(s,'Warehouse Main') 
+        for i, number in self.supply.items():
+            if i in remained:
+                print(s,s,i.capitalize(), remained[i]['main'], '(capacity =', number['main'], ')')
+        print(s,'Warehouse Auxiliary')
+        for i, number in self.supply.items():
+            if i in remained:
+                print(s,s,i.capitalize(), remained[i]['aux'], '(capacity =', number['aux'], ')')
+        print(s,'Technicians')
+        for name in self.tech_list:
+            print(s,s,'Technician', name, 'weekly rate=500')  
+  
+
     
     
     

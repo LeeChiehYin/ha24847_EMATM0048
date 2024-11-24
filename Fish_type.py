@@ -33,20 +33,19 @@ class Fish:
         while True:  
             try:
                 if sell > self.limit:
-                    print(sell, 'exceeds the limit for', self.name)
+                    print(sell, 'exceeds the limit for', self.name, '(Maxium demand:)', self.limit)
                     return None # #避免被納入計算
                 elif sell < 0:
                     print ('Invalid : The number of fish you sell should be 0 or positive integer!')
                     return None #避免被納入計算
                 else:
                     self.sell = sell
-                    
-                    return {
-                        'fertilizer usage': self.fertilizer_usage *sell,
-                        'feed usage': self.feed_usage *sell,
-                        'salt usage': self.salt_usage *sell,
-                        'maintenance' : self.maintenance *sell/5
-                      }
+                    return  {
+                     'fertilizer usage': self.fertilizer_usage *sell,
+                     'feed usage': self.feed_usage *sell,
+                     'salt usage': self.salt_usage *sell,
+                     'maintenance' : self.maintenance *sell/5
+                   }
             except ValueError:
                 print('Invalid : Please enter a valid integer!')
         

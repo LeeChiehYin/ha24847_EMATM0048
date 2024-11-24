@@ -14,16 +14,22 @@ from Hatchery import Hatchery
 from Vendor import Vendor
 hatchery = Hatchery(cash=10000, tech_count = 0, tech_list=[])
 h_name = Hatchery.hatchery_name()
+default = 8
 
 
 
 while True: #quarter can only be a positive integar
     try:
-        quarter = int(input('Please enter number of quarters:'))
-        if quarter >0:
+        q_input = input('Please enter number of quarters (press enter = default[8]):')
+        if not q_input:
+            quarter = default
             break
         else:
-            print('Invalid : The number of quarter should be positive!')
+            quarter = int(q_input)
+            if quarter >0:
+                break
+            else:
+                print('Invalid : The number of quarter should be positive!')
     except ValueError: # for non-numeric, tell customer to enter a valid integer float will also be classified here
         print('Invalid : Please enter a positive integer number!')
         
@@ -75,14 +81,18 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
     for fish in fish_list:
         while True:
             try:
-                sell = int(input(f"Please enter how many {fish.name} you'd like to sell in the quarter: "))
+                sell = int(input(f"Please enter how many {fish.name} you'd like to sell in the quarter (Maxium demand:{fish.limit}): "))
+             
+                resources = fish.fish_resource(sell)
+                if resources is None:
+                    continue
                 
-                if x:
+                if x:  #如果x=True 就是有資源不足，該停下
                     result.append(f"Fish {fish.name}, demand {fish.limit}, sell {sell}: 0")    
                     fish.sell = 0
                     break
                 
-                resources = fish.fish_resource(sell)
+                
                   
                 #break
             #except ValueError:
@@ -204,8 +214,7 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
     d,remained = hatchery.depreciation(remaining)
     
     if hatchery.cash<0: #went bankrupt
-        n = hatchery.bankrupt_count(payment, wh_r)
-        #hatchery.bankrupt_count(payment, wh_r)
+        n=hatchery.bankrupt_count(payment, wh_r) 
         hatchery.bankrupt(h_name, n, remained)
         print('END OF QUARTER', quarter_count)
         print('{:=^50s}'.format('FINAL STATE QUARTER' + str(quarter_count+1)))

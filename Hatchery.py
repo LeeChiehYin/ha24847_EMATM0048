@@ -174,7 +174,7 @@ class Hatchery:
             
     def bankrupt_count(self, payment, wh_r):
         owe = []  #紀錄錢不夠
-        n = self.cash -wh_r  
+        n = self.cash + wh_r  
         zero = False  # 是否小於零
     
         #處理main
@@ -185,7 +185,7 @@ class Hatchery:
                     wh['main'] = 0
                 else:  # 资金不足，无法支付
                     owe.append(
-                        f"Can't restock {i}, insufficient funds, need {round(wh['main'],2)} from main but only have {round((self.cash-wh_r),2)}"
+                        f"Can't restock {i}, insufficient funds, need {round(wh['main'],2)} from main but only have {round(n,2)}"
                     ) 
                     owe.append(f"Went bankrupt restocking warehouse Main")
                     zero = True  # 小於零

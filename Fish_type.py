@@ -11,28 +11,28 @@ class Fish:
     A fish class with attributes for resource usage, maintenance cost, limit on sales, and price.
 
     Attributes:
-      name(str): The name of each fish.
-      fertilizer_usage (float): Amount of fertilizer needed for each fish.
-      feed_usage(int): Amount of feed needed for each fish.
-      salt_usage(int):Amount of salt needed for each fish.
-      maintenance(float): Maintenance of each fish
-      limit(int): Maximum number of fish that can be sold for each fish.
-      price(int): Selling price per fish.
-      sell(int): Number of fish sold.
+      name(str): the name of each fish
+      fertilizer_usage (float): amount of fertilizer needed for each fish
+      feed_usage(int): amount of feed needed for each fish
+      salt_usage(int):amount of salt needed for each fish
+      maintenance(float): maintenance of each fish
+      limit(int): maximum number of fish that can be sold for each fish
+      price(int): selling price per fish
+      sell(int): number of fish sold
     """
     def __init__(self, name, fertilizer_usage, feed_usage, salt_usage, maintenance, limit, price):
         """
         Initializes fish with its attributes..
 
         Parameters:
-          name(str): The name of each fish.
-          fertilizer_usage (float): Amount of fertilizer needed for each fish.
-          feed_usage(int): Amount of feed needed for each fish.
-          salt_usage(int):Amount of salt needed for each fish.
-          maintenance(float): Maintenance of each fish
-          limit(int): Maximum number of fish that can be sold for each fish.
-          price(int): Selling price per fish.
-          sell(int): Number of fish sold(initialize as 0).
+          name(str): the name of each fish
+          fertilizer_usage (float): amount of fertilizer needed for each fish
+          feed_usage(int): amount of feed needed for each fish
+          salt_usage(int):amount of salt needed for each fish
+          maintenance(float): maintenance of each fish
+          limit(int): maximum number of fish that can be sold for each fish
+          price(int): selling price per fish
+          sell(int):number of fish sold(initialize as 0)
         """
         self.name = name
         self.fertilizer_usage = fertilizer_usage
@@ -65,35 +65,35 @@ class Fish:
         Calculate the resource usage and maintenance for the specified number of fish sold.
 
         Parameters:
-          sell(int):Number of fish to sell.
+          sell(int):number of fish to sell
  
         Returns:
           u(dict):a dictionary with the calculated resource usage(fertilizer usage, feed usage,salt usage) and maintenance(weeks).
-                  Returns None for invalid inputs.
+                  Returns None for invalid inputs
  
         Note:
           Handles invalid inputs(exceeding the fish limit or entering negative numbers and non-numeric) 
           by showing error messages.
         """
-        while True:  
-            try:
-                if sell > self.limit:
-                    print(sell, 'exceeds the limit for', self.name, '(Maxium demand:)', self.limit)
-                    return None #Avoid including in calculations
-                elif sell < 0:
-                    print ('Invalid : The number of fish you sell should be 0 or positive integer!')
-                    return None 
-                else:
-                    self.sell = sell
-                    u= {
-                     'fertilizer usage': self.fertilizer_usage *sell,
-                     'feed usage': self.feed_usage *sell,
-                     'salt usage': self.salt_usage *sell,
-                     'maintenance' : self.maintenance *sell/5
-                   }
-                    return u
-            except ValueError:
-                print('Invalid : Please enter a valid integer!')
+        #while True:  
+            
+        if sell > self.limit:
+            print(sell, 'exceeds the limit for', self.name, '(Maxium demand:)', self.limit)
+            return None #Avoid including in calculations
+        elif sell < 0:
+            print ('Invalid : The number of fish you sell should be 0 or positive integer!')
+            return None 
+        else:
+            self.sell = sell
+            u= {
+             'fertilizer usage': self.fertilizer_usage *sell,
+             'feed usage': self.feed_usage *sell,
+             'salt usage': self.salt_usage *sell,
+             'maintenance' : self.maintenance *sell/5
+           }
+            return u
+            #except ValueError:
+                #rint('Invalid : Please enter a valid integer!')
         
     def earning(self):
         """

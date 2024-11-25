@@ -6,7 +6,7 @@ Created on Thu Nov 14 20:20:26 2024
 """
 #Hatchery class (supplies, cash ,technicians):
 import math #為了無條件進位depreciation
-#from Fish_type import Fish
+from Fish_type import Fish
 
 class Hatchery:
     def __init__(self, cash, tech_count, tech_list = None):
@@ -32,53 +32,78 @@ class Hatchery:
 
     #Technician
     def decide_tech(self, tech_change):
+        """define the number of technician"""
         self.tech_count += tech_change
         return self.tech_count
     
-    """def tech_special(self):
-        #是否要有specialize技能
-        decide = input('Would you like to add specialized skill on this worker? (1=Yes, 2=No)')
-        #要怎樣的技能(maintenance*2/3)
-         while True:
-             if decide = 1: #如果同意專精
-                 print('Please choose a fish type to specialize.')
-                 s_type = input()
-                 if s_type in fish_list:
-                     maintenance"""
+    def current_tech(self, tech_change, fish_list):
+        """
+        Manage technicians: hire/fire and assign specialized skills.
     
-    def current_tech(self, tech_change, tech_list):
+        tech_change: number of technicians to hire (+) or fire (-).
+        fish_list: list of available fish types.
         """
-        tech_change : the number of technicians who are hired or fired in this quarter(+/-)
-        tech_list :the list which contains names of all technicians (updated every quarter)
-        """
+        species = [fish.name.lower() for fish in fish_list]# 獲取魚類名單
+        s_type=None
+        # Add technicians
         if tech_change > 0:
-            for i in range(tech_change):
-                name_add = input('Please enter name of new technician.').strip().capitalize() #縮排，首字大寫
-                self.tech_list.append(name_add)
-        elif tech_change < 0:
-            for i in range(abs(tech_change)):
-                if self.tech_list:
-                    while True:
-                        name_remove = input("Please enter the name of the technicians you'd like to remove :").strip().capitalize()
-                        if name_remove in tech_list:
-                            print('Let go', name_remove,', weekly rate=500 in this quarter')
-                            self.tech_list.remove(name_remove)
-                            break
-                        else: #如果name_remove不在list
-                            print('Technician',name_remove,'is not in the Technician list. Please check the name again!')
-                            print('Here are the technicians in last quarter:',tech_list)
-                                #except ValueError:
-                                #print('Please enter a name on the technician list.',tech_list)
-                else: #如果list是空的
-                    print('The Technician list is empty!')
+            for _ in range(tech_change):
+                while True:
+                    name_add = input('Please enter name of new technician: ').strip().capitalize()
+                    if any(tech["Name"].lower() == name_add.lower() for tech in self.tech_list):
+                        print(f"Sorry, {name_add} is already on the list! Please try again.")
+                        continue
                     break
+                            
+                    
+                # 是否添加專業技能
+                while True:
+                    decide = input(f"Would you like to add a specialized skill for {name_add}? (1=Yes, 2=No): ").strip()
+                    if decide in ['1', '2']:
+                        break
+                    print('Invalid input: Please enter 1 (Yes) or 2 (No).')
+    
+                if decide == '1':  # Assign specialized skill
+                    while True:
+                        print("Available fish types:", ", ".join(species)) #這是啥意思
+                        s_type = input(f"Please choose a type of fish for technician {name_add} to specialize in: ").strip().lower()
+                        if s_type in species:
+                            self.tech_list.append({"Name": name_add, "Specialized skill": s_type})
+                            print('Technician', name_add,'is now specialized in', s_type,'.')
+                            break
+                        else:
+                            print('Invalid:', s_type,' is not in the Fish List.')
+                else:  # No specialization
+                    self.tech_list.append({"Name": name_add, "Specialized skill":s_type})
+                    print('Technician', name_add, 'has no specialized skill assigned.')
 
+    # Remove technicians
+        elif tech_change < 0:
+            for _ in range(abs(tech_change)):
+                if self.tech_list:  # 確保技術人員列表不為空
+                    while True:
+                        name_remove = input("Please enter the name of the technician you'd like to remove: ").strip().capitalize()
+                        if name_remove in self.tech_list:
+                            self.tech_list.remove(name_remove)
+                            print('Technician',name_remove, 'has been removed.')
+                            break
+                        else:
+                            print('Technician', name_remove, 'is not in the list. Please check the name again.')
+                            print("Here are the current technicians:", ", ".join(self.tech_list)) #這啥意思
+                else:
+                    print('The Technician list is empty! No one to remove.')
+                    break
+    
+        print('Updated Technician List:', self.tech_list)  # 測試用，可選擇刪除
+        return s_type
+     
     #check work and resource
-    def check(self,total_usage,workload):
-        x_resource = [] #make a list of insufficient resource
+    def check(self,total_usage,workload,fish_type):
+        x_resource=[] #make a list of insufficient resource
+        x_work =False
         remainings ={}
         tech_work = self.tech_count * 9
-        x_work = False #人力是否不足
+        sp_work=0
         
         #resource check
         for r, need in total_usage.items(): #能用的資源跟需要的
@@ -87,15 +112,34 @@ class Hatchery:
                 remainings[r] = remaining
                 if remaining<0: #資源不足
                     x_resource.append(r)
-       
-        #work check
-        if workload > tech_work: #如果工作量大於tech工作
-            x_work= True
-            
+                    print(f"Type of remainings: {type(remainings)}") 
+                    continue
+                
+        # loop technician
+        for tech in self.tech_list:
+            #check if technician is specialised in this fish type
+            if tech['Specialized skill'] == fish_type.name.lower():
+                sp_work += 9
+        
+        #now i have avaiable specialised hours
+       # need: remaining tech hours required
+        n_work=tech_work-sp_work 
+        if sp_work >= workload:
+           tech_work = 2/3 * (3/2 * sp_work - workload)+n_work
+           
+        else: #sp_work<workload
+            if 3/2*sp_work + n_work>=workload:
+                tech_work = n_work-(workload-(3/2*sp_work)) #普通工作人(工作量-專精用完)
+                
+            else:
+                workload -= (sp_work + n_work)
+                tech_work=0
+                x_work = True
+        print(tech_work)
         enough = not x_resource and not x_work
         return enough,x_resource,x_work,tech_work,remainings
-       
-        
+    
+    
     #warehouse cost    
     def  warehouse_use(self, total_usage):
        usage = {

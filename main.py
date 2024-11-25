@@ -16,7 +16,8 @@ hatchery = Hatchery(cash=10000, tech_count = 0, tech_list=[])
 h_name = Hatchery.hatchery_name()
 default = 8
 
-
+fish_instance =Fish('',0,0,0,0,0,0)
+fish_list = fish_instance.fish_detail()
 
 while True: #quarter can only be a positive integar
     try:
@@ -45,25 +46,23 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
         try:
             tech_change = int(input('To add enter positive(+), to remove enter negative(-), no change enter 0.\n>>>Please enter number of technicians:'))
             new_tech_count = hatchery.tech_count + tech_change #先建一個new避免規定外呃數值被算入正式tech        
-            if new_tech_count < 1:
+            if new_tech_count < 1: #tech number should be at least 1
                 print('Invalid : You need at least 1 technician in this quarter.')
-            elif new_tech_count > 5:
+            elif new_tech_count > 5: #maxium tech number is 5 
                 print('Invalid : Sorry, you cannot hire more than 5 technicians.')
             else:
-                hatchery.decide_tech(tech_change)
-                hatchery.current_tech(tech_change, tech_list = hatchery.tech_list)
-                
+                tech_count =hatchery.decide_tech(tech_change)
+                s_type =hatchery.current_tech(tech_change, fish_list=fish_list)
+                #hatchery.tech_special(new_tech,fish_list)
                 print('Current number of technicains :', hatchery.tech_count) #test 交作業時可刪
                 print('Current Technician list :', hatchery.tech_list) #test 交作業時可刪
-                for name in hatchery.tech_list:
-                    print('Hired', name, 'weekly rate = 500 in quarter', quarter_count)
+                for tech in hatchery.tech_list:
+                    print('Hired', tech['Name'], 'weekly rate = 500 in quarter', quarter_count)
                 break  # Exit the technician input loop when done
         except ValueError:
             print('Please enter an integer number.')
                  
     #Fish Demand
-    fish_instance =Fish('',0,0,0,0,0,0)
-    fish_list = fish_instance.fish_detail()
     total_usage = {
         'fertilizer': 0,
         'feed': 0,
@@ -74,10 +73,7 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
     sold_list={} #被賣掉的魚種跟數量
     result = [] #為了一次性輸出結果，先把結果存起來
     x = False #資源不足的標記
-    #x_fish =None #紀錄第一條資源不足的魚的名子跟資料
- 
-   
-         
+      
     for fish in fish_list:
         while True:
             try:
@@ -93,11 +89,6 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
                     break
                 
                 
-                  
-                #break
-            #except ValueError:
-                #print("Invalid : Please enter a valid integer.")
-                
                 if resources:  # 如果返回有效資源需求，累加到總需求
                     new_total_usage = total_usage.copy()
                     new_total_usage['fertilizer'] += resources['fertilizer usage']
@@ -105,12 +96,15 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
                     new_total_usage['salt'] += resources['salt usage']
                     new_workload = workload + resources['maintenance']
                     
-                    enough, x_resource, x_work, tech_work, remainings = hatchery.check(new_total_usage, new_workload)
+                    enough, x_resource, x_work, tech_work, remainings = hatchery.check(new_total_usage, new_workload, fish)
+                    print(f"Type of remainings after check call: {type(remainings)}, Value: {remainings}")
                     if x_work: #人力不足
                        result.append(f"Fish {fish.name}, demand {fish.limit}, sell {sell}: 0")
                        result.append(f"Insufficient labor: required {new_workload-workload} weeks, available {tech_work-workload}")
                        result.append("Insufficient ingredients:")
-                       for r in remainings:
+                       print(f"Type of remainings before loop: {type(remainings)}, Value: {remainings}")
+                       for r in remainings:  # 問題的地方
+                           print(f"Iterating over: {r}")
                            need = resources[r + ' usage']
                            result.append(f"  {r} need {need}, storage {remainings[r]+need}")
 
@@ -122,8 +116,7 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
                         result.append(f"Fish {fish.name}, demand {fish.limit}, sell {sell}: 0")
                         result.append("Insufficient ingredients:")
                         for r in x_resource:
-                            remain = remainings[r]
-                            result.append(f"  {r} shortage: need {remain}, available {hatchery.supply[r]['origin']}")
+                            result.append(f"  {r} shortage: need {remainings[r]}, available {hatchery.supply[r]['origin']-total_usage[r]}")
                         fish.sell = 0 
                         x = True
                         break
@@ -153,7 +146,7 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
         
     for i in result:
         print(i)   
-    print(sold_list)        
+    print(sold_list)               
 
     #Showing weekly and quarterly salary
     for name in hatchery.tech_list:
@@ -163,7 +156,6 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
     
     
     #Warehouse cost
-    #hatchery = Hatchery()
     usage,remaining,wh_main_c, wh_aux_c,wh_c = hatchery.warehouse_use(total_usage)
     print(usage) #test
     print("Remaing:", remaining)#test
@@ -183,7 +175,6 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
     select = vendor_instance.vendor_detail()
     print('Select:', select.name)
     payment = select.buy(remaining)
-    print("payment:", payment) #test
     
     #Hatchery name cash balance  
     earning = 0
@@ -199,16 +190,6 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
         
     change = earning - (1500 +tech_cost + wh_c+ wh_r)
     hatchery.cash += change
-    #test
-    print('earning:',earning)
-    print('tech_cost:',tech_cost)
-    print('warehouse cost:',wh)
-    print('warehouse refill:',wh_r)
-    print('change:',change)
-    print('cash balance',hatchery.cash)
-    print('Sold List',sold_list)
-    
-    
     
     s = ' '*4
     d,remained = hatchery.depreciation(remaining)

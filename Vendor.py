@@ -11,11 +11,29 @@ from Hatchery import Hatchery
 class Vendor:
     """
     A vendor class with attributes for vendor's name and resource prices, and help to .
-
+    
     Attributes:
+      name(str): vendor's name'
+      fertilizer_p(float): price per unit of fertilizer
+      feed_p(float): price per unit of feed
+      salt_p(float): price per unit of salt
+      hatchery (Hatchery): Hatchery instance managing cash and tech count
       
     """
     def __init__(self, name, fertilizer_p, feed_p, salt_p):
+        """
+         Initializes a Vendor object with specific prices for fertilizer, feed, and salt, 
+         and creates a Hatchery instance with initial cash and tech count.
+         
+         Parameters:
+             name(str): vendor's name
+             fertilizer_p(float): price per unit of fertilizer
+             feed_p(float): price per unit of feed
+             salt_p(float): price per unit of salt
+    
+         Attributes:
+             hatchery (Hatchery): Hatchery instance initialized with a starting cash of 10,000 and zero technicians
+         """
         
         self.name = name
         self.fertilizer_p = fertilizer_p
@@ -24,10 +42,17 @@ class Vendor:
         self.hatchery = Hatchery(cash=10000, tech_count=0)
         
     def vendor_detail(self):
-      
+        """
+        Shows available vendors and allows the user to select a vendor to buy resource.
+
+        Return:
+          Vendor: the selected Vendor(Slippery Lakes or Scaly Wholesaler)
+
+        Note:
+          Prompt the user to select vendor 1 or 2, and handles invalid inputs by showing error messages.
+        """
         SL = Vendor('1.Slippery Lakes', 0.3, 0.1, 0.05)
         SW = Vendor('2.Scaly Wholescaler', 0.2, 0.4, 0.25) 
-        #vendor_list = [SL,SW]
         
         while True:
             s=' '*4
@@ -53,11 +78,11 @@ class Vendor:
         Calculates how much each resource is needed to refill warehouses.
       
         Parameters:
-          remaining (dict): The remaining stock of resources ('fertilizer', 'feed', 'salt').
+          remaining (dict): The remaining stock of resources ('fertilizer', 'feed', 'salt')
         
-        Returns:
+        Return:
           payment(dict): A dictionary contains the total cost for each resource 
-          in main and auxiliary warehouse.
+          in main and auxiliary warehouse
         
         Note:
             The method calculates how much more of each resource is needed, 
@@ -78,9 +103,6 @@ class Vendor:
         dep,remained = self.hatchery.depreciation(remaining)
         
         for r, amount in full.items():
-            print(type(amount))  # 查看 'amount' 變量的類型
-            print(type(remaining))  # 查看 'remaining' 變量的類型
-            print(type(dep))  # 查看 'dep' 變量的類型
             x_main = amount['main']-remaining[r]['main']+dep[r]['main']  #main需要補滿的量
             x_aux = amount['aux']-remaining[r]['aux']+dep[r]['aux']  #aux需要補滿的量
       
@@ -104,12 +126,12 @@ class Vendor:
         Parameters:
           full(dict): A dictionary contains  full capacity for each resource in main and axilliary warehouse.
 
-        Returns:
+        Return:
           self.remaining(dict): The updated remaining resources, which are set to  full capacities.
         
         Note:
-            This method resets the remaining quantities of all resources ('fertilizer', 'feed', 'salt') 
-            to the specified full values for the next season. Only if the cash balance>0.
+          This method resets the remaining quantities of all resources ('fertilizer', 'feed', 'salt') 
+          to the specified full values for the next season. Only if the cash balance>0.
         """
         for resource in full:
             self.remaining[resource] = {

@@ -9,8 +9,14 @@ Created on Thu Nov 14 23:36:28 2024
 from Hatchery import Hatchery
 
 class Vendor:
+    """
+    A vendor class with attributes for vendor's name and resource prices, and help to .
 
+    Attributes:
+      
+    """
     def __init__(self, name, fertilizer_p, feed_p, salt_p):
+        
         self.name = name
         self.fertilizer_p = fertilizer_p
         self.feed_p = feed_p 
@@ -18,6 +24,7 @@ class Vendor:
         self.hatchery = Hatchery(cash=10000, tech_count=0)
         
     def vendor_detail(self):
+      
         SL = Vendor('1.Slippery Lakes', 0.3, 0.1, 0.05)
         SW = Vendor('2.Scaly Wholescaler', 0.2, 0.4, 0.25) 
         #vendor_list = [SL,SW]
@@ -43,10 +50,18 @@ class Vendor:
     def buy (self,  remaining):
 
         """
-        計算每個資源的購買成本。
+        Calculates how much each resource is needed to refill warehouses.
       
-        vendor: Vendor 實例，用於獲取資源價格。
-        remaining: 更新後的倉庫剩餘數量。
+        Parameters:
+          remaining (dict): The remaining stock of resources ('fertilizer', 'feed', 'salt').
+        
+        Returns:
+          payment(dict): A dictionary contains the total cost for each resource 
+          in main and auxiliary warehouse.
+        
+        Note:
+            The method calculates how much more of each resource is needed, 
+            then calculates the cost based on the vendor's prices.
         """
         full = {
             'fertilizer': {'main': 20, 'aux': 10},
@@ -80,14 +95,21 @@ class Vendor:
                 payment[r]['main'] = x_main * self.salt_p
                 payment[r]['aux'] = x_aux *self.salt_p
    
-            #remaining[r]['main'] += x_main #補滿main
-            #remaining[r]['aux'] += x_aux #補滿aux
-          
         return payment
     
     def reset(self, full): #下一季開始時讓remaining變成full狀態
         """
         Reset the remaining values to the full capacity for the next season.
+        
+        Parameters:
+          full(dict): A dictionary contains  full capacity for each resource in main and axilliary warehouse.
+
+        Returns:
+          self.remaining(dict): The updated remaining resources, which are set to  full capacities.
+        
+        Note:
+            This method resets the remaining quantities of all resources ('fertilizer', 'feed', 'salt') 
+            to the specified full values for the next season. Only if the cash balance>0.
         """
         for resource in full:
             self.remaining[resource] = {

@@ -10,7 +10,7 @@ from Hatchery import Hatchery
 
 class Vendor:
     """
-    A vendor class with attributes for vendor's name and resource prices, and help to .
+    A class with attributes for vendor's name and resource prices, and help to .
     
     Attributes:
       name(str): vendor's name'
@@ -32,7 +32,8 @@ class Vendor:
              salt_p(float): price per unit of salt
     
          Attributes:
-             hatchery (Hatchery): Hatchery instance initialized with a starting cash of 10,000 and zero technicians
+             hatchery: Hatchery instance initialized with a starting cash of 10,000 and zero technicians
+             
          """
         
         self.name = name
@@ -43,13 +44,14 @@ class Vendor:
         
     def vendor_detail(self):
         """
-        Shows available vendors and allows the user to select a vendor to buy resource.
+        Show vendors and allow the user to select a vendor to buy resource.
 
         Return:
-          Vendor: the selected Vendor(Slippery Lakes or Scaly Wholesaler)
+          Vendor: the selected Vendor
 
         Note:
-          Prompt the user to select vendor 1 or 2, and handles invalid inputs by showing error messages.
+          Prompt user to select vendor, and handle invalid inputs by showing error messages.
+          
         """
         SL = Vendor('1.Slippery Lakes', 0.3, 0.1, 0.05)
         SW = Vendor('2.Scaly Wholescaler', 0.2, 0.4, 0.25) 
@@ -75,18 +77,17 @@ class Vendor:
     def buy (self,  remaining):
 
         """
-        Calculates how much each resource is needed to refill warehouses.
+        Calculate how much each resource is needed to refill warehouses.
       
         Parameters:
-          remaining (dict): The remaining stock of resources ('fertilizer', 'feed', 'salt')
+          remaining(dict): the remaining resources in two warehouse 
         
         Return:
-          payment(dict): A dictionary contains the total cost for each resource 
-          in main and auxiliary warehouse
+          payment(dict): dictionary contains the total cost for each resource in the two warehouses
         
         Note:
-            The method calculates how much more of each resource is needed, 
-            then calculates the cost based on the vendor's prices.
+          Calculate the cost based on the chosen vendor's prices.
+          
         """
         full = {
             'fertilizer': {'main': 20, 'aux': 10},
@@ -130,8 +131,9 @@ class Vendor:
           self.remaining(dict): The updated remaining resources, which are set to  full capacities.
         
         Note:
-          This method resets the remaining quantities of all resources ('fertilizer', 'feed', 'salt') 
+          Reset the remaining quantities of all resources ('fertilizer', 'feed', 'salt') 
           to the specified full values for the next season. Only if the cash balance>0.
+          
         """
         for resource in full:
             self.remaining[resource] = {

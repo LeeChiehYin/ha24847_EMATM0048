@@ -8,7 +8,7 @@ Created on Thu Nov 14 23:36:25 2024
 #Fish type class
 class Fish:
     """
-    A fish class with attributes for resource usage, maintenance cost, limit on sales, and price.
+    A class with attributes for resource usage, maintenance cost, limit on sales, and price.
 
     Attributes:
       name(str): the name of each fish
@@ -19,6 +19,7 @@ class Fish:
       limit(int): maximum number of fish that can be sold for each fish
       price(int): selling price per fish
       sell(int): number of fish sold
+      
     """
     def __init__(self, name, fertilizer_usage, feed_usage, salt_usage, maintenance, limit, price):
         """
@@ -33,6 +34,7 @@ class Fish:
           limit(int): maximum number of fish that can be sold for each fish
           price(int): selling price per fish
           sell(int):number of fish sold(initialize as 0)
+          
         """
         self.name = name
         self.fertilizer_usage = fertilizer_usage
@@ -49,7 +51,8 @@ class Fish:
         Set up and return a list which contains all fish types.
     
         Return:
-         fish_list(list):a list contains all fish types
+         fish_list(list): list contains all fish types
+         
         """
         cf = Fish('Clef Fins', 0.1, 12, 2, 2, 25, 250)
         ts = Fish('Timpani Snapper', 0.05, 9, 2, 1, 10, 350)
@@ -68,14 +71,14 @@ class Fish:
           sell(int):number of fish to sell
  
         Returns:
-          u(dict):a dictionary with the calculated resource usage(fertilizer usage, feed usage,salt usage) and maintenance(weeks).
+          u(dict): dictionary with the calculated resource usage(fertilizer usage, feed usage,salt usage) and maintenance(weeks).
                   Returns None for invalid inputs
  
         Note:
           Handles invalid inputs(exceeding the fish limit or entering negative numbers and non-numeric) 
           by showing error messages.
+          
         """
-        #while True:  
             
         if sell > self.limit:
             print(sell, 'exceeds the limit for', self.name, '(Maxium demand:)', self.limit)
@@ -92,16 +95,15 @@ class Fish:
              'maintenance' : self.maintenance *sell/5
            }
             return u
-            #except ValueError:
-                #rint('Invalid : Please enter a valid integer!')
-        
+            
     def earning(self):
         """
         Calculate 
           Calculates the total earnings based on the number of fish sold.
 
         Returns:
-            self.sell*self.price(int): total earnings of fish sold
+            self.sell*self.price(int): total earnings of fish sold  
+            
         """
         return self.sell * self.price
         

@@ -100,9 +100,9 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
                     print(f"Type of remainings after check call: {type(remainings)}, Value: {remainings}")
                     if x_work: #人力不足
                        result.append(f"Fish {fish.name}, demand {fish.limit}, sell {sell}: 0")
-                       result.append(f"Insufficient labor: required {new_workload-workload} weeks, available {tech_work-workload}")
+                       result.append(f"Insufficient labor: required {new_workload-workload} weeks, available {tech_work}")
                        result.append("Insufficient ingredients:")
-                       print(f"Type of remainings before loop: {type(remainings)}, Value: {remainings}")
+                       
                        for r in remainings:  # 問題的地方
                            print(f"Iterating over: {r}")
                            need = resources[r + ' usage']
@@ -116,7 +116,8 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
                         result.append(f"Fish {fish.name}, demand {fish.limit}, sell {sell}: 0")
                         result.append("Insufficient ingredients:")
                         for r in x_resource:
-                            result.append(f"  {r} shortage: need {remainings[r]}, available {hatchery.supply[r]['origin']-total_usage[r]}")
+                            need = resources[r + ' usage']
+                            result.append(f"  {r} shortage: need {need}, available {hatchery.supply[r]['origin']-total_usage[r]}")
                         fish.sell = 0 
                         x = True
                         break

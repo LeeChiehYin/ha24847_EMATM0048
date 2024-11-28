@@ -185,7 +185,6 @@ class Hatchery:
                 remainings[r] = remaining
                 if remaining<0: #資源不足
                     x_resource.append(r)
-                    print(f"Type of remainings: {type(remainings)}")  #test
                     continue
                 
         # loop technician
@@ -208,7 +207,7 @@ class Hatchery:
                 workload -= (sp_work + n_work)
                 tech_work=0
                 x_work = True
-        print(sp_work,tech_work)
+                
         enough = not x_resource and not x_work
         return enough,x_resource,x_work,tech_work,remainings
     

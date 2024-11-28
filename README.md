@@ -1,7 +1,7 @@
 ### Chieh-Yin
 ### (EMATM0048) Data Science
 ### My Git Repo
-[Git Repo](https://github.com/LeeChiehYin/Chieh-Yin)
+[Git Repo](https://github.com/LeeChiehYin/ha24847_EMATM0048)
 
 # Fish Hatchery Simulation
 ## Introduction

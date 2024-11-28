@@ -1,6 +1,8 @@
 ### Chieh-Yin
 ### (EMATM0048) Data Science
-**Git Repo 網址**
+### My Git Repo
+[Git Repo](https://github.com/LeeChiehYin/Chieh-Yin)
+
 # Fish Hatchery Simulation
 ## Introduction
 This program simulate a fish hatchery which breeds and sells differnet fish species. Each quarter, user need to choose whether to hire/fire technicains and decide the amount of fish to sell, also user should select vendors to refill warehouses in the end of the quarter. This program will calculate the cash balance of this quarter to see if it's bankrupted.

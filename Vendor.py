@@ -74,7 +74,7 @@ class Vendor:
             except ValueError:
                 print("Invalid input: Please enter a valid number (1 or 2)")
                 
-    def buy (self,  remaining):
+    def buy(self,  remaining):
 
         """
         Calculate how much each resource is needed to refill warehouses.
@@ -104,8 +104,8 @@ class Vendor:
         dep,remained = self.hatchery.depreciation(remaining)
         
         for r, amount in full.items():
-            x_main = amount['main']-remaining[r]['main']+dep[r]['main']  #main需要補滿的量
-            x_aux = amount['aux']-remaining[r]['aux']+dep[r]['aux']  #aux需要補滿的量
+            x_main = amount['main']-remaining[r]['main']+dep[r]['main'] 
+            x_aux = amount['aux']-remaining[r]['aux']+dep[r]['aux'] 
       
             
             if r == 'fertilizer':
@@ -120,7 +120,7 @@ class Vendor:
    
         return payment
     
-    def reset(self, full): #下一季開始時讓remaining變成full狀態
+    def reset(self, full): 
         """
         Reset the remaining values to the full capacity for the next season.
         

@@ -23,7 +23,7 @@ class Fish:
     """
     def __init__(self, name, fertilizer_usage, feed_usage, salt_usage, maintenance, limit, price):
         """
-        Initializes fish with its attributes..
+        Initializes fish with its attributes.
 
         Parameters:
           name(str): the name of each fish
@@ -98,8 +98,8 @@ class Fish:
             
     def earning(self):
         """
-        Calculate 
-          Calculates the total earnings based on the number of fish sold.
+     
+        Calculates the total earnings based on the number of fish sold.
 
         Returns:
             self.sell*self.price(int): total earnings of fish sold  

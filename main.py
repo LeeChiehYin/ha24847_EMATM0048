@@ -6,7 +6,10 @@ Created on Thu Nov 14 19:29:42 2024
 """
 #Lee,Chieh-Yin
 #(EMATM0048) Data Science
-#Description
+#Description :A simulation of a fish hatchery which breeds and sells differnet fish species. 
+#Each quarter, user need to choose whether to hire/fire technicains and decide the amount of fish to sell, 
+#also user should select vendors to refill warehouses in the end of the quarter.
+#This program will calculate the cash balance of this quarter to see if it's bankrupt.
 
 #Quarter, Technicains
 from Fish_type import Fish
@@ -35,7 +38,7 @@ while True: #quarter can only be a positive integar
         print('Invalid : Please enter a positive integer number!')
         
         
-for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
+for quarter_count in range(1, quarter + 1): 
     print('{:=^50s}'.format(''))
     print('{:=^50s}'.format('STIMULATING QUARTER' + str(quarter_count)))
     print('{:=^50s}'.format(''))
@@ -45,18 +48,18 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
     while True:
         try:
             tech_change = int(input('To add enter positive(+), to remove enter negative(-), no change enter 0.\n>>>Please enter number of technicians:'))
-            new_tech_count = hatchery.tech_count + tech_change #先建一個new避免規定外呃數值被算入正式tech        
-            if new_tech_count < 1: #tech number should be at least 1
+            new_tech_count = hatchery.tech_count + tech_change        
+            if new_tech_count < 1:
                 print('Invalid : You need at least 1 technician in this quarter.')
-            elif new_tech_count > 5: #maxium tech number is 5 
+            elif new_tech_count > 5: 
                 print('Invalid : Sorry, you cannot hire more than 5 technicians.')
             else:
                 tech_count =hatchery.decide_tech(tech_change)
                 s_type =hatchery.current_tech(tech_change, fish_list=fish_list)
  
                 for tech in hatchery.tech_list:
-                    print('Hired', tech['Name'], 'weekly rate = 500 in quarter', quarter_count)
-                break  # Exit the technician input loop when done
+                    print('Hired', tech['Name'], ', weekly rate = 500 in quarter', quarter_count)
+                break  
         except ValueError:
             print('Please enter an integer number.')
                  
@@ -67,11 +70,11 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
         'salt': 0
         }
     workload = 0
-    sell_input = {} #為了輸出每個魚種user的input
-    sold_list={} #被賣掉的魚種跟數量
-    result = [] #為了一次性輸出結果，先把結果存起來
-    x = False #資源不足的標記
-      
+    sell_input = {} 
+    sold_list={} 
+    result = [] 
+    x = False 
+
     for fish in fish_list:
         while True:
             try:
@@ -81,13 +84,13 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
                 if resources is None:
                     continue
                 
-                if x:  #如果x=True 就是有資源不足，該停下
+                if x:  
                     result.append(f"Fish {fish.name}, demand {fish.limit}, sell {sell}: 0")    
                     fish.sell = 0
                     break
                 
                 
-                if resources:  # 如果返回有效資源需求，累加到總需求
+                if resources: 
                     new_total_usage = total_usage.copy()
                     new_total_usage['fertilizer'] += resources['fertilizer usage']
                     new_total_usage['feed'] += resources['feed usage']
@@ -96,12 +99,12 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
                     
                     enough, x_resource, x_work, tech_work, remainings = hatchery.check(new_total_usage, new_workload, fish)
         
-                    if x_work: #人力不足
+                    if x_work: 
                        result.append(f"Fish {fish.name}, demand {fish.limit}, sell {sell}: 0")
                        result.append(f"Insufficient labor: required {new_workload-workload} weeks, available {tech_work}")
                        result.append("Insufficient ingredients:")
                        
-                       for r in remainings:  # 問題的地方
+                       for r in remainings:  
         
                            need = resources[r + ' usage']
                            result.append(f"  {r} need {need}, storage {remainings[r]+need}")
@@ -110,7 +113,7 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
                        x = True
                        break  
                         
-                    elif x_resource:#資源不足
+                    elif x_resource:
                         result.append(f"Fish {fish.name}, demand {fish.limit}, sell {sell}: 0")
                         result.append("Insufficient ingredients:")
                         for r in x_resource:
@@ -121,7 +124,7 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
                         break
                   
                     
-                    else: #如果資源夠，就讓加進total usage
+                    else: 
                          total_usage =new_total_usage
                          fish.sell =sell
                          workload = new_workload
@@ -145,9 +148,9 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
     for i in result:
         print(i)          
 
-    #Showing weekly and quarterly salary
+   
     for name in hatchery.tech_list:
-        print('Paid', name, 'weekly rate = 500, amount 6000' )
+        print('Paid', name['Name'], 'weekly rate = 500, amount 6000' )
     print('Paid rent/utilities 1500')
     
     
@@ -156,7 +159,7 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
     usage,remaining,wh_main_c, wh_aux_c,wh_c = hatchery.warehouse_use(total_usage)
 
     for r,cost in wh_main_c.items():
-        print('Warehouse Main:',r,'cost',cost ) #四捨五入到小數點第二位
+        print('Warehouse Main:',r,'cost',cost ) 
     for r,cost in wh_aux_c.items():
         print('Warehouse Auxilliary:',r,'cost',cost )
          
@@ -174,7 +177,7 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
   
     tech_cost = hatchery.tech_count * 6000 
     wh = wh_c #warehouse cost
-    wh_r = 0 #補滿warehouse的錢
+    wh_r = 0 
     for r in payment:
         wh_r+=payment[r]['main']+payment[r]['aux']
         
@@ -205,7 +208,7 @@ for quarter_count in range(1, quarter + 1):  #下一個quarter從這裡開始
     
         print(s,'Technicians')
         for name in hatchery.tech_list:
-            print(s,s,'Technician', name, 'weekly rate=500')
+            print(s,s,'Technician', name['Name'], 'weekly rate = 500')
     
         print('END OF QUARTER', quarter_count)
     

@@ -5,7 +5,7 @@ Created on Thu Nov 14 20:20:26 2024
 @author: Chieh-Yin
 """
 #Hatchery class (supplies, cash ,technicians):
-import math #為了無條件進位depreciation
+import math #for depreciation
 from Fish_type import Fish
 
 class Hatchery:
@@ -14,7 +14,7 @@ class Hatchery:
 
     Attributes:
       supply(dict): dictionary contains resource details
-      cash(float): Current cash balance of the hatchery.
+      cash(float): Current cash balance of the hatchery
       tech_count(int): number of technicians
       tech_list(list): list of existing technicians and there specialized skill
       
@@ -56,7 +56,7 @@ class Hatchery:
         """
         while True:
             h_name = input('Please enter your Hatchery name :').strip()
-            if not h_name: #無效輸入
+            if not h_name:
                 print('Invaild: Please enter a name for your Hatchery!')
             else:
                 h_name = h_name[0].upper() + h_name[1:]
@@ -93,7 +93,7 @@ class Hatchery:
           When firing, prompt user to enter the name, ensure the name is in tech list.
           
         """
-        species = [fish.name.lower() for fish in fish_list]# 獲取魚類名單
+        species = [fish.name.lower() for fish in fish_list]
         s_type=None
         # Add technicians
         if tech_change > 0:
@@ -101,12 +101,11 @@ class Hatchery:
                 while True:
                     name_add = input('Please enter name of new technician: ').strip().capitalize()
                     if any(tech["Name"].lower() == name_add.lower() for tech in self.tech_list):
-                        print(f"Sorry, {name_add} is already on the list! Please try again.")
+                        print('Sorry,', name_add, 'is already on the list! Please try again.')
                         continue
                     break
                             
                     
-                # 是否添加專業技能
                 while True:
                     decide = input(f"Would you like to add a specialized skill for {name_add}? (1=Yes, 2=No): ").strip()
                     if decide in ['1', '2']:
@@ -115,7 +114,7 @@ class Hatchery:
     
                 if decide == '1':  # Assign specialized skill
                     while True:
-                        print("Available fish types:", ", ".join(species)) #這是啥意思
+                        print("Available fish types:", ", ".join(species)) 
                         s_type = input(f"Please choose a type of fish for technician {name_add} to specialize in: ").strip().lower()
                         if s_type in species:
                             self.tech_list.append({"Name": name_add, "Specialized skill": s_type})
@@ -130,7 +129,7 @@ class Hatchery:
     # Remove technicians
         elif tech_change < 0:
             for _ in range(abs(tech_change)):
-                if self.tech_list:  # 確保技術人員列表不為空
+                if self.tech_list:  
                     while True:
                         name_remove = input("Please enter the name of the technician you'd like to remove: ").strip().capitalize()
                         if any(tech["Name"] == name_remove for tech in self.tech_list):
@@ -142,7 +141,8 @@ class Hatchery:
                         else:
                             print('Technician', name_remove, 'is not in the list. Please check the name again.')
                             for tech in self.tech_list:
-                                print('Here are the current technicians:',tech["Name"]) 
+                                print('Following are the current technicians:')
+                                print('    ', tech["Name"]) 
                 
                 else:
                     print('The Technician list is empty! No one to remove.')
@@ -172,36 +172,34 @@ class Hatchery:
           The method checks both resource availability and technician hours to determine if the workload is enough.
           
         """
-        x_resource=[] #make a list of insufficient resource
+        x_resource=[] 
         x_work =False
         remainings ={}
         tech_work = self.tech_count * 9
         sp_work=0
         
         #resource check
-        for r, need in total_usage.items(): #能用的資源跟需要的
+        for r, need in total_usage.items(): 
             if r in self.supply:
                 remaining =self.supply[r]['origin'] - need
                 remainings[r] = remaining
-                if remaining<0: #資源不足
+                if remaining<0: 
                     x_resource.append(r)
                     continue
-                
+        
         # loop technician
         for tech in self.tech_list:
             #check if technician is specialised in this fish type
             if tech['Specialized skill'] == fish_type.name.lower():
                 sp_work += 9
         
-        #now i have avaiable specialised hours
-       # need: remaining tech hours required
         n_work=tech_work-sp_work 
         if sp_work >= workload:
            tech_work = 2/3 * (3/2 * sp_work - workload)+n_work
            
         else: #sp_work<workload
             if 3/2*sp_work + n_work>=workload:
-                tech_work = n_work-(workload-(3/2*sp_work)) #普通工作人(工作量-專精用完)
+                tech_work = n_work-(workload-(3/2*sp_work)) 
                 
             else:
                 workload -= (sp_work + n_work)
@@ -242,25 +240,25 @@ class Hatchery:
         
      
         
-        for resource in total_usage: #從total_usage找資料
-            if resource in remaining: #如果remaining裡有這類資料
+        for resource in total_usage: 
+            if resource in remaining: 
                 amount = total_usage[resource]
          
-                if amount > remaining[resource]['main']: #如果總量大於main庫存
-                    usage[resource]['main_use'] = remaining[resource]['main'] #main全部用完
-                    remaining[resource]['main'] = 0 #用完了
+                if amount > remaining[resource]['main']: 
+                    usage[resource]['main_use'] = remaining[resource]['main'] 
+                    remaining[resource]['main'] = 0 
  
-                    r_amount = amount - usage[resource]['main_use'] #剩下的(r_amount)為總量-main庫存
-                    if r_amount <= remaining[resource]['aux']: #如果剩下的量小於等於aux庫存(絕對的)
-                        usage[resource]['aux_use'] = r_amount #aux的用量就是剩下的量
-                        remaining[resource]['aux'] -= r_amount #aux剩下的量為扣掉剩下的總量後的值
-                    else:  # 如果辅助库存不足
+                    r_amount = amount - usage[resource]['main_use'] 
+                    if r_amount <= remaining[resource]['aux']: 
+                        usage[resource]['aux_use'] = r_amount 
+                        remaining[resource]['aux'] -= r_amount 
+                    else:  
                         usage[resource]['aux_use'] = remaining[resource]['aux']
                         remaining[resource]['aux'] = 0
                         
-                else:#如果總量小於等於main庫存
-                    usage[resource]['main_use'] = amount #aux的用量就是總量
-                    remaining[resource]['main'] -= amount #main剩下的量為扣掉總量後的值
+                else:
+                    usage[resource]['main_use'] = amount 
+                    remaining[resource]['main'] -= amount 
        
        #warehouse cost 
         wh_main_c={}
@@ -296,10 +294,10 @@ class Hatchery:
                  
        """
         d = {}
-        remained ={} #remmain被depr過
+        remained ={} 
         for r, amount in remaining.items():
             if r in self.supply:
-                main_d = math.ceil(self.supply[r]['depre'] * amount['main']) #依照規定depreciation要無條件進位成整數
+                main_d = math.ceil(self.supply[r]['depre'] * amount['main']) #make it integer
                 aux_d = math.ceil(self.supply[r]['depre'] * amount['aux']) 
                 
                 d[r] ={
@@ -317,7 +315,7 @@ class Hatchery:
             
     def bankrupt_count(self, payment, wh_r):
         """
-        Deduct payments for warehouse resources and checks for bankruptcy.
+        Deduct payments for warehouse resources and checks if it's bankrupted.
      
         Parameters:
           payment(dict): payment amounts for resources in main and auxilliary warehouse
@@ -331,30 +329,30 @@ class Hatchery:
          Record shortages if funds are not enough for any payment.
          
         """
-        owe = []  #紀錄錢不夠
+        owe = []  #record message when not enough money
         n = self.cash + wh_r  
-        zero = False  # 是否小於零
+        zero = False #when <0=True
     
-        #處理main
+        #main
         for i, wh in payment.items(): #warehouse ingredient
-            if wh['main'] > 0:  # 如果 main 有需求
-                if n >=wh['main']:  # 足夠支付
-                    n -= wh['main']  # 扣款
+            if wh['main'] > 0:  # if main has enough resource
+                if n >=wh['main']:  
+                    n -= wh['main']  
                     wh['main'] = 0
-                else:  # 资金不足，无法支付
+                else:  # not enough money store the bankrupt text
                     owe.append(f"Can't restock {i}, insufficient funds, need {round(wh['main'],2)} from main but only have {round(n,2)}") 
                     owe.append(f"Went bankrupt restocking warehouse Main")
-                    zero = True  # 小於零
+                    zero = True  
                     break
     
-        #如果還是正數就進入處理aux
-        if not zero:  # 只有當 main 階段沒小於零時才進入 aux
-            for i, wh in payment.items(): #warehouse ingredient
-                if wh['aux'] > 0:  # 如果 aux 有需求
+        # if n is still positive than start to refill aux
+        if not zero:  
+            for i, wh in payment.items(): 
+                if wh['aux'] > 0:  # if aux has need
                     if n >= wh['aux']:  
                         n -= wh['aux']  
                         wh['aux'] = 0
-                    else:  #資金不足
+                    else:  
                         owe.append(f"Can't restock {i}, insufficient funds, need {round(wh['aux'],2)} from aux but only have {round(n,2)}")
                         owe.append(f"Went bankrupt restocking warehouse Aux")
                         break  
@@ -383,7 +381,7 @@ class Hatchery:
                 print(s,s,i.capitalize(), remained[i]['aux'], '(capacity =', number['aux'], ')')
         print(s,'Technicians')
         for name in self.tech_list:
-            print(s,s,'Technician', name, 'weekly rate=500')  
+            print(s,s,'Technician', name['Name'], 'weekly rate=500')  
   
 
     

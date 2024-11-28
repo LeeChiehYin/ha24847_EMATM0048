@@ -1,7 +1,15 @@
-# Chieh-Yin   **Git Repo 網址**
+### Chieh-Yin
+### (EMATM0048) Data Science
+**Git Repo 網址**
 ## Introduction
-This program simulate a fish hatchery which breeds and sells differnet fish species. Each quarter, user need to choose whether to hire/fire technicains and decide the amount of fish to sell, also user should select vendors to refill warehouses in the end of the quarter. This program will calculate the cash balance of this quarter to see if it's bankrupt.
+This program simulate a fish hatchery which breeds and sells differnet fish species. Each quarter, user need to choose whether to hire/fire technicains and decide the amount of fish to sell, also user should select vendors to refill warehouses in the end of the quarter. This program will calculate the cash balance of this quarter to see if it's bankrupted.
+###
+
 ## Code Design
+### File
+1. **Hatchery.py**: A file contains the code of Hatchery class.
+2. **Fish_type.py**: A file contains the code of Fish_type class.
+3. **Vendor.py**: A file contains the code of Vendor class.
 ### Class
 1. **Hatchery**: A class displaying a hatchery with resources, cash balance, and technicians. Severakl calculations are included
    - Atttributes:
@@ -57,12 +65,23 @@ This program simulate a fish hatchery which breeds and sells differnet fish spec
      - self.remaining(dict): The updated remaining resources, which are set to  full capacities.
    - Note: Reset the remaining quantities of all resources ('fertilizer', 'feed', 'salt')  to the specified full values for the next season. Only if the cash balance > 0.
      
-### Data Structures and Logic
+### How Program works
+### Main Process:
+1. Decide how many quarters want to stimulate.
+2. Decide to hire or fire technicians.
+3. **Extend**: If there is new technicians, decide whether to make he/she specialized in specific fish (less time to sell/maintain it), and choose the species to specialized in.
+4. Decide how much fish to sell.
+5. Count if there are enough resources and workforce.
+6. Show how much fish sold and insufficient resources or workforce, and tell user the amount of remaining resources and remaining workforce.
+7. Caculate and show warehouse costs (the money you pay to store resources) in both Main and Auxilliary warehouses.
+8. Decide which vendor to purchase resources to refill warehouse.
+9. Calculate the payment of warehouse refilling and the cash balance of this quarter.
+10. - If the hatchery bankrupted, showing hacthery details and cash balance, end of stimulation.
+    - If not bankrupted, refilled the warehouse  and start the new quarter stimulation.
+
 
 ## Design Choices
+- Which file to calculate the money balance:
 
-## How to Use
 
-## Testing and Debuging
 
-## Conclusion
